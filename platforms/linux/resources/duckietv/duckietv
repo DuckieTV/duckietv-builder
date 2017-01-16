@@ -1,0 +1,7 @@
+#!/bin/bash
+APP_WRAPPER="`readlink -f "$0"`"
+HERE="`dirname "$APP_WRAPPER"`"
+
+export LD_LIBRARY_PATH=$([ -n "$LD_LIBRARY_PATH" ] && echo "$HERE:$HERE/lib:$LD_LIBRARY_PATH" || echo "$HERE:$HERE/lib")
+
+exec -a "$0" "$HERE/PKGNAME-bin" "$@"

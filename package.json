@@ -1,0 +1,29 @@
+{
+  "name": "duckietv-builder",
+  "version": "1.0.0",
+  "description": "A new way to build duckietv",
+  "main": "duckietv-builder",
+  "repository": "https://github.com/DuckieTV/duckietv-builder.git",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "build",
+    "duckietv"
+  ],
+  "author": "SchizoDuckie",
+  "bin": {
+    "duckietv-builder": "./duckietv-builder"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "app": "^0.1.0",
+    "chrome-webstore-upload": "^0.2.1",
+    "commander": "^2.9.0",
+    "dateformat": "^2.0.0",
+    "ng-templatecache": "^0.1.4",
+    "shelljs": "^0.7.6",
+    "sleep": "^5.1.0",
+    "superagent": "^3.3.2"
+  }
+}

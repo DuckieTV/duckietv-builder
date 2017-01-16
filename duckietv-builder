@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+
+require('shelljs/global');
+config.verbose = false;
+config.fatal = true;
+
+echo(["╔══════════════════════════════════════════╗",
+	    "║                                          ║",
+      "║          DuckieTV BuildBot               ║",
+      "║                                          ║",
+      "╚══════════════════════════════════════════╝"].join("\n"));
+
+var program = require('commander');
+
+if (!which('git')) {
+    echo('Git is required to run the DuckieTV BuildBot.');
+    exit(1);
+}
+
+program
+    .version('1.0.0')
+    .option('-v, --verbose', 'increase verbosity')
+    .command('prepare', 'prepare --nightly --platforms [platforms] Prepare (nightly) builds for a platform (default all)')
+    .command('binaries', 'binaries --installers --platforms[platforms] compile binaries with optional installers for a platform (default all)')
+    .parse(process.argv);
+
+if (!process.argv.slice(2).length) {
+    program.outputHelp();
+}

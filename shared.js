@@ -3,7 +3,8 @@ require('shelljs/global');
 var BUILD_DIR = process.cwd() + '/TMP',
     BUILD_SOURCE_DIR = BUILD_DIR + '/DuckieTV',
     BASE_OUTPUT_DIR = BUILD_DIR + '/build',
-    REPLACE_SCRIPT_MATCH_REGEX = /<!-- deploy:replace\=\'(<script.*)\' -->([\s\S]+?[\n]{0,})[^\/deploy:]<!-- \/deploy:replace -->/gm,
+    BINARY_OUTPUT_DIR = process.cwd() + "/binaries";
+REPLACE_SCRIPT_MATCH_REGEX = /<!-- deploy:replace\=\'(<script.*)\' -->([\s\S]+?[\n]{0,})[^\/deploy:]<!-- \/deploy:replace -->/gm,
 
     FIND_SCRIPT_FILENAME_REGEX = /(js\/[a-zA-Z0-9\/\.\-]+)/g,
     REPLACE_CSS_MATCH_REGEX = /<!-- deploy:replace\=\'(<link.*)\' -->([\s\S]+?[\n]{0,})[^\/deploy:]<!-- \/deploy:replace -->/gm,
@@ -105,10 +106,14 @@ function buildTemplateCache(input) {
     ShellString(templatecacheRender(cache)).to('dist/templates.js');
 }
 
+function getVersion() {
+    return cat(BUILD_DIR + '/VERSION');
+}
+
 function modifyPackageJSON(options, BUILD_DIR) {
     var json = JSON.parse(cat(BUILD_SOURCE_DIR + '/package.json'));
-    var title = "DuckieTV Standalone" + ((options.nightly) ? ' Nightly' : '') + " v" + options.version;
-    json.version = options.version;
+    var title = "DuckieTV Standalone" + ((options.nightly) ? ' Nightly' : '') + " v" + getVersion();
+    json.version = getVersion();
     json['user-agent'] = json.window.title = title;
     ShellString(JSON.stringify(json, null, "\t")).to(BUILD_DIR + '/package.json');
 }
@@ -124,7 +129,7 @@ function getCredentials() {
 
 function patchManifest(BUILD_DIR, backgroundScripts) {
     var manifest = JSON.parse(cat(BUILD_DIR + '/manifest.json'));
-    manifest.version = cat(BUILD_DIR + '/VERSION');
+    manifest.version = getVersion();
     manifest.background.scripts = backgroundScripts;
     ShellString(JSON.stringify(manifest, null, "\t")).to(BUILD_DIR + "/manifest.json");
 }
@@ -139,6 +144,7 @@ module.exports = {
     copyDefaultResources: copyDefaultResources,
     getCredentials: getCredentials,
     patchManifest: patchManifest,
+    getVersion: getVersion,
     BUILD_DIR: BUILD_DIR,
     BUILD_SOURCE_DIR: BUILD_SOURCE_DIR,
     BASE_OUTPUT_DIR: BASE_OUTPUT_DIR

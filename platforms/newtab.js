@@ -1,5 +1,6 @@
 require('shelljs/global');
-var shared = require('../shared');
+var shared = require('../shared'),
+    buildUtils = require(' ../util');
 
 
 /**
@@ -9,6 +10,8 @@ var shared = require('../shared');
  */
 
 var BUILD_DIR = shared.BUILD_DIR + '/newtab';
+var PACKAGE_FILENAME = 'DuckieTV-%VERSION%-chrome-newtab.zip';
+
 
 module.exports = {
 
@@ -20,15 +23,20 @@ module.exports = {
         },
 
         makeBinary: function(options) {
-
-
-            // zip -r "binaries/DuckieTV-${DTREV}-Chrome-NewTab.zip" newtab   
-
+            cp('-r', BUILD_DIR, shared.BASE_OUTPUT_DIR);
         },
+        packageBinary: function(options) {
+            var targetFileName = util.buildFilename(PACKAGE_FILENAME);
+            buildUtils.zipBinary('newtab', targetFileName);
+        }
         deploy: function(options) {
 
             if (options.nightly && options.deploy) {
-                //pushToGithub();
+                buildUtils.publishFileToGithubTag('DuckieTV/Nightlies', options.GITHUB_TAG, shared.OUTPUT_DIR + '/' + buildUtils.buildFilename(PACKAGE_FILENAME));
+            }
+
+            if (!options.nightly && options.deploy && options.iamsure) {
+                buildUtils.publishFileToGithubTag('SchizoDuckie/DuckieTV', options.GITHUB_TAG, shared.OUTPUT_DIR + '/' + buildUtils.buildFilename(PACKAGE_FILENAME));
             }
 
 

@@ -1,5 +1,6 @@
 require('shelljs/global');
-var shared = require('../shared');
+var shared = require('../shared'),
+    util = require(' ../util');
 
 
 /**
@@ -8,6 +9,8 @@ var shared = require('../shared');
  */
 
 var BUILD_DIR = shared.BUILD_DIR + '/windows';
+var PACKAGE_FILENAME = 'DuckieTV-%VERSION%-windows-%ARCHITECTURE%.zip';
+var ARCHITECTURES = ['x32', 'x64'];
 
 module.exports = {
 
@@ -22,13 +25,27 @@ module.exports = {
 
 
         },
+        packageBinary: function(options) {
+            ARCHITECTURES.map(function(arch) {
+                echo("Packing windows " + arch);
+                var targetFileName = util.buildFilename(PACKAGE_FILENAME, ARCHITECTURE);
+                buildUtils.zipBinary('windows-' + arch, targetFileName);
+                echo("Packaging windows " + arch + " done.");
+            });
+        },
         deploy: function(options) {
+            ARCHITECTURES.map(function(arch) {
 
-            if (options.nightly && options.deploy) {
+                if (options.nightly && options.deploy) {
+                    buildUtils.publishFileToGithubTag('DuckieTV/Nightlies', options.GITHUB_TAG, shared.OUTPUT_DIR + '/' + buildUtils.buildFilename(PACKAGE_FILENAME));
+                }
+
+                if (!options.nightly && options.deploy && options.iamsure) {
+                    buildUtils.publishFileToGithubTag('SchizoDuckie/DuckieTV', options.GITHUB_TAG, shared.OUTPUT_DIR + '/' + buildUtils.buildFilename(PACKAGE_FILENAME));
+                }
 
 
-            }
-
+            })
 
         }
     }

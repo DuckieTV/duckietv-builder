@@ -1,5 +1,6 @@
 require('shelljs/global');
-var shared = require('../shared');
+var shared = require('../shared'),
+    util = require('../util');
 
 
 /**
@@ -8,6 +9,11 @@ var shared = require('../shared');
  */
 
 var BUILD_DIR = shared.BUILD_DIR + '/osx';
+var PACKAGE_FILENAME = 'DuckieTV-%VERSION%-OSX-%ARCHITECTURE%.pkg';
+var ARCHITECTURE = 'x64';
+
+
+
 
 module.exports = {
 
@@ -22,6 +28,11 @@ module.exports = {
 
 
         },
+        packageBinary: function(options) {
+            var targetFileName = util.buildFilename(PACKAGE_FILENAME, ARCHITECTURE);
+            // make dmg
+
+        }
         deploy: function(options) {
 
             if (options.nightly && options.deploy) {

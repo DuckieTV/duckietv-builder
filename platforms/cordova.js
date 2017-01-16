@@ -1,7 +1,8 @@
-require('shelljs/global');
+require('shelljs/global')
 
 var shared = require('../shared'),
-    request = require('superagent');
+    request = require('superagent'),
+    buildUtils = require(' ../buildUtils');
 
 /**
  * DuckieTV Cordova build processor.
@@ -17,6 +18,56 @@ var shared = require('../shared'),
  */
 
 var BUILD_DIR = shared.BUILD_DIR + '/cordova';
+var PACKAGE_FILENAME = 'DuckieTV-%VERSION%-android.apk';
+
+module.exports = {
+
+    processor: {
+
+        preProcess: function(options) {
+
+            patchTab();
+            renameTab();
+            patchAppJS();
+            patchDepsJS();
+            renameLocalesDir();
+            shared.patchManifest(BUILD_DIR, ['dist/background.js', 'dist/launch.js']);
+
+        },
+
+        /**
+         * The cordova build process is outsourced to Phonegap Build.
+         * We trigger a refresh and build there and wait for it to complete for 3 0fsaeconds (builds usally take 5 sec)
+         */
+        makeBinary: function(options) {
+            initRepository();
+            pushToCordovaGithub();
+            triggerPhonegapBuild();
+        },
+
+        /**
+         * Download the previously triggered phonegapbuild to the output dir
+         */
+        packageBinary: function() {
+            downloadPhonegapBuild(shared.OUTPUT_DIR + '/' + PACKAGE_FILENAME);
+        },
+        deploy: function(options) {
+
+            if (options.nightly && options.deploy) {
+                buildUtils.publishFileToGithubTag('DuckieTV/Nightlies', options.GITHUB_TAG, shared.OUTPUT_DIR + '/' + buildUtils.buildFilename(PACKAGE_FILENAME));
+            }
+
+            if (!options.nightly && options.deploy && options.iamsure) {
+                buildUtils.publishFileToGithubTag('SchizoDuckie/DuckieTV', options.GITHUB_TAG, shared.OUTPUT_DIR + '/' + buildUtils.buildFilename(PACKAGE_FILENAME));
+            }
+
+            if (options.deployDemo) {
+
+            }
+        }
+    }
+
+};
 
 /**
  * Give the android build a dedicated viewport so that it looks the same on each device.
@@ -129,40 +180,3 @@ function triggerPhonegapBuild() {
             echo("Phonegap build queued!");
         });
 }
-
-module.exports = {
-
-    processor: {
-
-        preProcess: function(options) {
-
-            patchTab();
-            renameTab();
-            patchAppJS();
-            patchDepsJS();
-            renameLocalesDir();
-            shared.patchManifest(BUILD_DIR, ['dist/background.js', 'dist/launch.js']);
-
-        },
-        /**
-         * The cordova build process is outsourced to Phonegap Build.
-         * We trigger a refresh and build there and wait for it to complete for 3 0fsaeconds (builds usally take 5 sec)
-         */
-        makeBinary: function(options) {
-            initRepository();
-            pushToCordovaGithub();
-            triggerPhonegapBuild();
-        },
-        deploy: function(options) {
-
-            if (options.nightly && options.deploy) {
-                pushToGithub();
-            }
-
-            if (options.deployDemo) {
-
-            }
-        }
-    }
-
-};

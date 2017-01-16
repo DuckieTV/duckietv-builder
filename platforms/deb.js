@@ -1,5 +1,6 @@
 require('shelljs/global');
-var shared = require('../shared');
+var shared = require('../shared'),
+    util = require(' ../util');
 
 
 /**
@@ -8,6 +9,8 @@ var shared = require('../shared');
  */
 
 var BUILD_DIR = shared.BUILD_DIR + '/deb';
+var PACKAGE_FILENAME = 'DuckieTV-%VERSION%-ubuntu-%ARCHITECTURE%.deb';
+var ARCHITECTURES = ['x32', 'x64'];
 
 module.exports = {
 
@@ -22,6 +25,15 @@ module.exports = {
             // copy        
 
         },
+        packageBinary: function(options) {
+            ARCHITECTURES.map(function(arch) {
+                echo("(TODO) Packing .deb " + arch);
+                var targetFileName = util.buildFilename(PACKAGE_FILENAME, arch);
+                echo("Done packing .deb " + arch);
+
+            });
+
+        }
         deploy: function(options) {
 
             if (options.nightly && options.deploy) {

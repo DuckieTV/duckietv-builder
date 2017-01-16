@@ -34,7 +34,7 @@ console.log("Building");
 /**
  * Housekeeping. cleanup and re-init.
  */
-var defaultDirs = ['output', sharedConfig.BUILD_SOURCE_DIR, sharedConfig.BASE_OUTPUT_DIR + '/dist'];
+var defaultDirs = ['output', sharedConfig.BINARY_OUTPUT_DIR, sharedConfig.BUILD_SOURCE_DIR, sharedConfig.BASE_OUTPUT_DIR + '/dist'];
 var buildDirs = [];
 rm('-rf', 'TMP'); // cleanup
 

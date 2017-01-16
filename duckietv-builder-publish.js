@@ -14,12 +14,13 @@ config.fatal = true;
  * - performs .apk build via Phonegap Build for android (platform = cordova)
  */
 program
-    .command('binaries', 'binaries --installers --platforms[platforms] ')
-    .description('compile binaries with optional installers for a platform (default all)')
-    .option("-p, --platform [platforms]", "Build a specific platform (defaults to all: " + sharedConfig.platforms.join(","), function(val) {
+    .command('publish', 'publish [--no-nightly --iamverysure]  ')
+    .description('publish the binaries to github and the chrome web store (if configured)')
+    .option("-p, --platform [platforms]", "publish a specific platform (defaults to all: " + sharedConfig.platforms.join(","), function(val) {
         return val.toLowerCase().split(',');
     }, sharedConfig.platforms)
-    .option("-n, --nightly", "do a nightly (version number set to today)")
+    .option("--no-nightly", "Publish the PRODUCTION version to the webstore")
+    .option("--iamverysure", "I am very sure that I want to do this. Tag a new release on github SchizoDuckie/DuckieTV")
     .parse(process.argv);
 
 
@@ -28,7 +29,7 @@ program
  * Build process
  */
 
-console.log("Building binaries");
+echo("Building binaries");
 
 /**
  * For each supported platform, run the preProcessor that does platform-specific things.

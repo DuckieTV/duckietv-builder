@@ -23,13 +23,11 @@ program
     .option("-n, --nightly", "do a nightly (version number set to today)")
     .parse(process.argv);
 
-
-
 /**
  * Build process
  */
 
-console.log("Building");
+echo("Building" + ((program.nightly) ? " Nightly!" : ""));
 
 /**
  * Housekeeping. cleanup and re-init.
@@ -37,6 +35,8 @@ console.log("Building");
 var defaultDirs = ['output', sharedConfig.BINARY_OUTPUT_DIR, sharedConfig.BUILD_SOURCE_DIR, sharedConfig.BASE_OUTPUT_DIR + '/dist'];
 var buildDirs = [];
 rm('-rf', 'TMP'); // cleanup
+
+
 
 program.platform.map(function(platform) {
     defaultDirs.push(sharedConfig.BUILD_DIR + '/' + platform);
@@ -58,7 +58,7 @@ sharedConfig.copyFilesToBase(); // copy duckietv sources (todo: replace with raw
  */
 program.version = !program.nightly ? cat('VERSION') : dateFormat('yyyymmdd');
 ShellString(program.version).to(sharedConfig.BASE_OUTPUT_DIR + "/VERSION");
-
+echo("Determined version: " + program.version);
 /**
  * Build template cache, copy files into place for each output method, patch locales with 'nightly' prefix when needed.
  */

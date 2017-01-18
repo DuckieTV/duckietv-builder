@@ -1,2 +1,5 @@
 TMP/
-node_modules
+node_modules/
+binaries/
+nwjs_download_cache
+nwjs_download_cache/

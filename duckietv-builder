@@ -1,14 +1,16 @@
 #!/usr/bin/env node
 
 require('shelljs/global');
+var shared = require('./shared');
 config.verbose = false;
 config.fatal = true;
 
-echo(["╔══════════════════════════════════════════╗",
-      "║                                          ║",
-      "║          DuckieTV BuildBot               ║",
-      "║                                          ║",
-      "╚══════════════════════════════════════════╝"].join("\n"));
+
+echo(["  ╔══════════════════════════════════════════╗",
+      "  ║                                          ║",
+      "  ║          DuckieTV BuildBot               ║",
+      "  ║                                          ║",
+      "  ╚══════════════════════════════════════════╝"].join("\n"));
 
 var program = require('commander');
 
@@ -20,9 +22,13 @@ if (!which('git')) {
 program
     .version('1.0.0')
     .option('-v, --verbose', 'increase verbosity')
-    .command('prepare', 'prepare --nightly --platforms [platforms] Prepare (nightly) builds for a platform (default all)')
-    .command('binaries', 'binaries --installers --platforms[platforms] compile binaries with optional installers for a platform (default all)')
+    .command('tag-release', 'create a new (nightly) tag and push it to the repository')
+    .command('prepare', 'prepare (nightly) builds for [platforms]')
+    .command('make-binaries', 'create (nightly) binaries for [platforms]')
+    .command('package-binaries', 'package (nightly) binaries for [platforms] into installers')
+    .command('publish', 'upload packaged (nightly) installers to the github release on [tag] and to the chrome web store')
     .parse(process.argv);
+
 
 if (!process.argv.slice(2).length) {
     program.outputHelp();

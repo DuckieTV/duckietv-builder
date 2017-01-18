@@ -1,16 +1,16 @@
 require('shelljs/global');
 
-var BUILD_DIR = process.cwd() + '/TMP',
-    BUILD_SOURCE_DIR = BUILD_DIR + '/DuckieTV',
-    BASE_OUTPUT_DIR = BUILD_DIR + '/build',
-    BINARY_OUTPUT_DIR = process.cwd() + "/binaries";
-REPLACE_SCRIPT_MATCH_REGEX = /<!-- deploy:replace\=\'(<script.*)\' -->([\s\S]+?[\n]{0,})[^\/deploy:]<!-- \/deploy:replace -->/gm,
+var BUILD_DIR = process.cwd() + '/TMP';
+var BUILD_SOURCE_DIR = BUILD_DIR + '/DuckieTV';
+var BASE_OUTPUT_DIR = BUILD_DIR + '/build';
+var BINARY_OUTPUT_DIR = process.cwd() + "/binaries";
+var REPLACE_SCRIPT_MATCH_REGEX = /<!-- deploy:replace\=\'(<script.*)\' -->([\s\S]+?[\n]{0,})[^\/deploy:]<!-- \/deploy:replace -->/gm;
 
-    FIND_SCRIPT_FILENAME_REGEX = /(js\/[a-zA-Z0-9\/\.\-]+)/g,
-    REPLACE_CSS_MATCH_REGEX = /<!-- deploy:replace\=\'(<link.*)\' -->([\s\S]+?[\n]{0,})[^\/deploy:]<!-- \/deploy:replace -->/gm,
+var FIND_SCRIPT_FILENAME_REGEX = /(js\/[a-zA-Z0-9\/\.\-]+)/g;
+var REPLACE_CSS_MATCH_REGEX = /<!-- deploy:replace\=\'(<link.*)\' -->([\s\S]+?[\n]{0,})[^\/deploy:]<!-- \/deploy:replace -->/gm;
 
-    FIND_CSS_FILENAME_REGEX = /(css\/[a-zA-Z0-9\/\.\-]+)/g,
-    REPLACE_ALL_PLACEHOLDERS_REGEX = /<!-- deploy:replace\=\'(.*)\' -->([\s\S]+?)[^\/deploy:]<!-- \/deploy:replace -->/g;
+var FIND_CSS_FILENAME_REGEX = /(css\/[a-zA-Z0-9\/\.\-]+)/g;
+var REPLACE_ALL_PLACEHOLDERS_REGEX = /<!-- deploy:replace\=\'(.*)\' -->([\s\S]+?)[^\/deploy:]<!-- \/deploy:replace -->/g;
 
 /**
  * Copy the required additional assets to each build dir
@@ -25,7 +25,7 @@ function copyDefaultResources(targets) {
 }
 
 function addNightlyStrings(targets) {
-    console.log('Nightly mode, patching locales');
+    echo('Nightly mode, patching locales');
     cd(BUILD_SOURCE_DIR);
     find("_locales/*/messages.json").map(function(file) {
         var translation = JSON.parse(cat(file));
@@ -107,7 +107,7 @@ function buildTemplateCache(input) {
 }
 
 function getVersion() {
-    return cat(BUILD_DIR + '/VERSION');
+    return cat(BASE_OUTPUT_DIR + '/VERSION');
 }
 
 function modifyPackageJSON(options, BUILD_DIR) {
@@ -147,5 +147,6 @@ module.exports = {
     getVersion: getVersion,
     BUILD_DIR: BUILD_DIR,
     BUILD_SOURCE_DIR: BUILD_SOURCE_DIR,
-    BASE_OUTPUT_DIR: BASE_OUTPUT_DIR
+    BASE_OUTPUT_DIR: BASE_OUTPUT_DIR,
+    BINARY_OUTPUT_DIR: BINARY_OUTPUT_DIR
 };

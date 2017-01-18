@@ -14,7 +14,6 @@ config.fatal = true;
  * - performs .apk build via Phonegap Build for android (platform = cordova)
  */
 program
-    .command('package-binaries', 'package-binaries --platforms[platforms] ')
     .description('package binaries to their respective packaging tgz format, move them to the binaries output dir')
     .option("-p, --platform [platforms]", "Build a specific platform (defaults to all: " + sharedConfig.platforms.join(","), function(val) {
         return val.toLowerCase().split(',');

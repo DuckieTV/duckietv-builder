@@ -24,7 +24,7 @@ module.exports = {
      * @param tag github_tag to upload to
      * @param string filename file to upload
      */
-    function publishFileToGithubTag(repo, github_release_id, filename) {
+    publishFileToGithubTag: function(repo, github_release_id, filename) {
         var command = 'curl -# -XPOST -H "Authorization:token %GITHUB_API_KEY%" -H "Content-Type:application/octet-stream" --data-binary @"%FILENAME%" "https://uploads.github.com/repos/%OWNER_REPO%/releases/%GITHUB_RELEASE_ID%/assets?name=%UPLOAD_PRETTY_NAME%"'
             .replace("%GITHUB_API_KEY%", shared.getCredentials().GITHUB_API_KEY)
             .replace("%OWNER_REPO", repo)
@@ -34,9 +34,9 @@ module.exports = {
         echo("Publishing " + filename + " to github tag " + github_release_id + " on remote" + remote);
         exec(command);
 
-    }
+    },
 
-    function createGithubRelease(since) {
+    createGithubRelease: function(since) {
         /**
 
 			DT=$(date +"%m%d%Y")

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <installer-script minSpecVersion="1.000000" authoringTool="com.apple.PackageMaker" authoringToolVersion="3.0.3" authoringToolBuild="174">
-    <title>$PKG_NAME$ $VERSION$</title>
+    <title>{{PKG_NAME}} {{VERSION}}</title>
     <options customize="never" allow-external-scripts="no"/>
-    ${BG_NODE}
+    {{BG_NODE}}
     <domains enable_anywhere="false"/>
     <installation-check script="pm_install_check();"/>
     <script>function pm_install_check() {
@@ -19,7 +19,7 @@
         <line choice="choice1"/>
     </choices-outline>
     <choice id="choice1" title="base">
-        <pkg-ref id="$PKG_NAME$"/>
+        <pkg-ref id="{{PKG_NAME}}"/>
     </choice>
-    <pkg-ref id="$PKG_NAME$" installKBytes="$INSTALL_KB_SIZE$" version="$VERSION$" auth="Root">#base.pkg</pkg-ref>
+    <pkg-ref id="{{PKG_NAME}}" installKBytes="{{INSTALL_KB_SIZE}}" version="{{VERSION}}" auth="Root">#base.pkg</pkg-ref>
 </installer-script>

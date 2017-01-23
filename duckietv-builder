@@ -2,15 +2,17 @@
 
 require('shelljs/global');
 var shared = require('./shared');
+
 config.verbose = false;
 config.fatal = true;
 
 
 echo(["  ╔══════════════════════════════════════════╗",
-      "  ║                                          ║",
-      "  ║          DuckieTV BuildBot               ║",
-      "  ║                                          ║",
-      "  ╚══════════════════════════════════════════╝"].join("\n"));
+    "  ║                                          ║",
+    "  ║          DuckieTV BuildBot               ║",
+    "  ║                                          ║",
+    "  ╚══════════════════════════════════════════╝"
+].join("\n"));
 
 var program = require('commander');
 
@@ -18,6 +20,8 @@ if (!which('git')) {
     echo('Git is required to run the DuckieTV BuildBot.');
     exit(1);
 }
+
+
 
 program
     .version('1.0.0')

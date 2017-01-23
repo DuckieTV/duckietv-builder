@@ -22,8 +22,28 @@ module.exports = {
         },
 
         makeBinary: function(options) {
-
-
+            /**
+             for arch in ${architechture[@]}; do
+                    cd ${WORKING_DIR}
+                    cp -r ${CURRENT_DIR}/resources/windows/app.nsi ${WORKING_DIR}
+                    cp -r $(get_value_by_key windowsIconPath) ${WORKING_DIR}/WORK_DIR/win-${arch}/latest-git/
+                    # Replce paths and vars in nsi script
+                    replace \
+                        NWJS_APP_REPLACE_APPNAME "$(get_value_by_key name)" \
+                        NWJS_APP_REPLACE_DESCRIPTION "$(get_value_by_key description)" \
+                        NWJS_APP_REPLACE_LICENSE $(get_value_by_key license) \
+                        NWJS_APP_REPLACE_VERSION $(get_value_by_key version) \
+                        NWJS_APP_REPLACE_EXE_NAME $(get_value_by_key name)-$(get_value_by_key version)-Windows-${arch}.exe \
+                        NWJS_APP_REPLACE_INC_FILE_1 ${WORKING_DIR}/WORK_DIR/win-${arch}/latest-git/\*.\* \
+                        NWJS_APP_REPLACE_ICO_FILE_NAME $(basename $(get_value_by_key windowsIconPath)) \
+                        NWJS_APP_REPLACE_INC_FILE_ICO $(get_value_by_key windowsIconPath) -- app.nsi;
+                    makensis app.nsi
+                    # Clean a bit
+                    rm -rf ${WORKING_DIR}/$(get_value_by_key name).nsi;
+                    mv ${WORKING_DIR}/$(get_value_by_key name)-$(get_value_by_key version)-Windows-${arch}.exe ${RELEASE_DIR}
+                    printf "\nDone Windows ${arch}\n"
+                done
+            */
         },
         packageBinary: function(options) {
             ARCHITECTURES.map(function(arch) {

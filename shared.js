@@ -4,13 +4,24 @@ var BUILD_DIR = process.cwd() + '/TMP';
 var BUILD_SOURCE_DIR = BUILD_DIR + '/DuckieTV';
 var BASE_OUTPUT_DIR = BUILD_DIR + '/build';
 var BINARY_OUTPUT_DIR = process.cwd() + "/binaries";
-var REPLACE_SCRIPT_MATCH_REGEX = /<!-- deploy:replace\=\'(<script.*)\' -->([\s\S]+?[\n]{0,})[^\/deploy:]<!-- \/deploy:replace -->/gm;
 
-var FIND_SCRIPT_FILENAME_REGEX = /(js\/[a-zA-Z0-9\/\.\-]+)/g;
-var REPLACE_CSS_MATCH_REGEX = /<!-- deploy:replace\=\'(<link.*)\' -->([\s\S]+?[\n]{0,})[^\/deploy:]<!-- \/deploy:replace -->/gm;
-
-var FIND_CSS_FILENAME_REGEX = /(css\/[a-zA-Z0-9\/\.\-]+)/g;
-var REPLACE_ALL_PLACEHOLDERS_REGEX = /<!-- deploy:replace\=\'(.*)\' -->([\s\S]+?)[^\/deploy:]<!-- \/deploy:replace -->/g;
+module.exports = {
+    platforms: ['windows', 'osx', 'linux', 'deb', 'browseraction', 'newtab', 'cordova'],
+    modifyPackageJSON: modifyPackageJSON,
+    buildTemplateCache: buildTemplateCache,
+    copyFilesToBase: copyFilesToBase,
+    processTabHTML: processTabHTML,
+    addNightlyStrings: addNightlyStrings,
+    copyDefaultResources: copyDefaultResources,
+    getCredentials: getCredentials,
+    patchManifest: patchManifest,
+    getVersion: getVersion,
+    BUILD_DIR: BUILD_DIR,
+    BUILD_SOURCE_DIR: BUILD_SOURCE_DIR,
+    BASE_OUTPUT_DIR: BASE_OUTPUT_DIR,
+    BINARY_OUTPUT_DIR: BINARY_OUTPUT_DIR,
+    NWJS_VERSION: '0.19.5'
+};
 
 /**
  * Copy the required additional assets to each build dir
@@ -36,6 +47,15 @@ function addNightlyStrings(targets) {
         ShellString(JSON.stringify(translation, null, "\t")).to(file);
     });
 }
+
+
+var REPLACE_SCRIPT_MATCH_REGEX = /<!-- deploy:replace\=\'(<script.*)\' -->([\s\S]+?[\n]{0,})[^\/deploy:]<!-- \/deploy:replace -->/gm;
+
+var FIND_SCRIPT_FILENAME_REGEX = /(js\/[a-zA-Z0-9\/\.\-]+)/g;
+var REPLACE_CSS_MATCH_REGEX = /<!-- deploy:replace\=\'(<link.*)\' -->([\s\S]+?[\n]{0,})[^\/deploy:]<!-- \/deploy:replace -->/gm;
+
+var FIND_CSS_FILENAME_REGEX = /(css\/[a-zA-Z0-9\/\.\-]+)/g;
+var REPLACE_ALL_PLACEHOLDERS_REGEX = /<!-- deploy:replace\=\'(.*)\' -->([\s\S]+?)[^\/deploy:]<!-- \/deploy:replace -->/g;
 
 /**
  * Parse tab.html and find all deploy:replace comments, concat the files between them to their output parameter.
@@ -133,20 +153,3 @@ function patchManifest(BUILD_DIR, backgroundScripts) {
     manifest.background.scripts = backgroundScripts;
     ShellString(JSON.stringify(manifest, null, "\t")).to(BUILD_DIR + "/manifest.json");
 }
-
-module.exports = {
-    platforms: ['windows', 'osx', 'linux', 'deb', 'browseraction', 'newtab', 'cordova'],
-    modifyPackageJSON: modifyPackageJSON,
-    buildTemplateCache: buildTemplateCache,
-    copyFilesToBase: copyFilesToBase,
-    processTabHTML: processTabHTML,
-    addNightlyStrings: addNightlyStrings,
-    copyDefaultResources: copyDefaultResources,
-    getCredentials: getCredentials,
-    patchManifest: patchManifest,
-    getVersion: getVersion,
-    BUILD_DIR: BUILD_DIR,
-    BUILD_SOURCE_DIR: BUILD_SOURCE_DIR,
-    BASE_OUTPUT_DIR: BASE_OUTPUT_DIR,
-    BINARY_OUTPUT_DIR: BINARY_OUTPUT_DIR
-};

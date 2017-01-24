@@ -4,6 +4,7 @@ var BUILD_DIR = process.cwd() + '/TMP';
 var BUILD_SOURCE_DIR = BUILD_DIR + '/DuckieTV';
 var BASE_OUTPUT_DIR = BUILD_DIR + '/build';
 var BINARY_OUTPUT_DIR = process.cwd() + "/binaries";
+var NWJS_DOWNLOAD_DIR = require('os').homedir() + "/nwjs_download_cache";
 
 module.exports = {
     platforms: ['windows', 'osx', 'linux', 'deb', 'browseraction', 'newtab', 'cordova'],
@@ -20,7 +21,8 @@ module.exports = {
     BUILD_SOURCE_DIR: BUILD_SOURCE_DIR,
     BASE_OUTPUT_DIR: BASE_OUTPUT_DIR,
     BINARY_OUTPUT_DIR: BINARY_OUTPUT_DIR,
-    NWJS_VERSION: '0.19.5'
+    NWJS_VERSION: '0.19.5',
+    NWJS_DOWNLOAD_DIR: NWJS_DOWNLOAD_DIR
 };
 
 /**

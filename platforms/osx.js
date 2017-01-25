@@ -71,7 +71,7 @@ module.exports = {
             cp('-r', BUILD_DIR + '/*', NWJS_APP_DIR)
 
             // copy osx/duckietv.icns to Contents/Resources/nw.icns
-            cp(__dirname + '/osx/duckietv.icns', BINARY_OUTPUT_DIR + '/Contents/Resources/nw.icns');
+            cp(__dirname + '/osx/duckietv.icns', BINARY_OUTPUT_DIR + '/Contents/Resources/app.icns');
 
             // patch Contents/info.plist with version number and stuff
             cat(__dirname + '/osx/Info.plist')
@@ -113,7 +113,6 @@ module.exports = {
             cp('-r', BINARY_OUTPUT_DIR, APP_BUILD_DIR); // copy source files to installer base
 
             cd(APP_BUILD_DIR);
-            chmod('-R a+xr', "DuckieTV.app"); // fix permissions
 
             // count files and install size and insert them in the install script
             echo("Counting files: ");
@@ -135,7 +134,11 @@ module.exports = {
                 .replace('{{COUNT_FILES}}', FILES_COUNT)
                 .to(WORK_DIR + "/flat/base.pkg/PackageInfo");
 
+            // fix permissions
+            exec('chmod -R a+xr ' + WORK_DIR + '/*');
+
             // package payload
+
             cd(WORK_DIR + "/root");
             exec("(find . | cpio -o --format odc --owner 0:80 | gzip -c )> " + WORK_DIR + "/flat/base.pkg/Payload");
 

@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>DuckieTV</string>
+	<string>DuckieTV {{NIGHTLY}}</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -271,7 +271,7 @@
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
-	<string>nwjs</string>
+	<string>DuckieTV</string>
 	<key>CFBundleIconFile</key>
 	<string>app.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -279,7 +279,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>DuckieTV</string>
+	<string>DuckieTV{{NIGHTLY}}</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

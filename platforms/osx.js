@@ -65,109 +65,87 @@ module.exports = {
             // copy default nwjs installation
             cp('-r', nwjspath + '/*', BINARY_OUTPUT_DIR);
             // create folder app.nw in nwjs.app/Contents/Resources/
+            mv(BINARY_OUTPUT_DIR + '/Contents/MacOS/nwjs', BINARY_OUTPUT_DIR + '/Contents/MacOS/DuckieTV')
             mkdir('-p', NWJS_APP_DIR);
             // copy output/osx/* to nwjs.app/Contents/Resources/
             cp('-r', BUILD_DIR + '/*', NWJS_APP_DIR)
-                // patch Contents/info.plist with version number and stuff
 
             // copy osx/duckietv.icns to Contents/Resources/nw.icns
             cp(__dirname + '/osx/duckietv.icns', BINARY_OUTPUT_DIR + '/Contents/Resources/nw.icns');
 
-            cat(__dirname + '/osx/Info.plist').replace("{{VERSION}}", shared.getVersion()).to(BINARY_OUTPUT_DIR + "/Contents/Info.plist")
+            // patch Contents/info.plist with version number and stuff
+            cat(__dirname + '/osx/Info.plist')
+                .replace("{{VERSION}}", shared.getVersion())
+                .replace("{{NIGHTLY}}", options.nightly ? " Nightly" : "")
+                .to(BINARY_OUTPUT_DIR + "/Contents/Info.plist")
             echo("Done making binary");
         },
         packageBinary: function(options) {
 
-            if (!which('bomutils')) {
-                yesno.ask('BomUtils is required if you want to build OSX .pkg files. Do you wish to install this now?', true, function(ok) {
-                    if (ok) {
-                        exec("git clone https://github.com/hogliux/bomutils");
-                        cd("bomutils");
-                        exec("make");
-                        exec("sudo make install");
-                    }
-                });
+            var ok = true;
+            if (!which('mkbom')) {
+                echo("\n\nBomUtils is required if you want to build OSX .pkg files. You can install it by executing:\n");
+                echo("git clone https://github.com/hogliux/bomutils && cd bomutils && make && sudo make install");
+                ok = false;
             }
 
-
             if (!which('xar')) {
-                yesno.ask('"xar is required if you want to build OSX .pkg files Do you wish to install this now?', true, function(ok) {
-                    if (ok) {
-                        exec("wget https://github.com/mackyle/xar/archive/xar-1.6.1.tar.gz");
-                        exec("tar -zxvf ./xar-1.6.1.tar.gz");
-                        exec("cd xar-xar-1.6.1/xar");
-                        exec("./autogen.sh");
-                        exec("make");
-                        exec("sudo make install")
-                    }
-                });
+                echo("\n\nxar is required if you want to build OSX .pkg files. You can install it by executing:\n");
+                echo("curl -L https://github.com/mackyle/xar/archive/xar-1.6.1.tar.gz | tar -xz && cd xar\*/xar && ./autogen.sh && make && sudo make install");
+                ok = false;
+            }
+
+            if (!ok) {
                 process.exit();
             }
 
 
-            var targetFileName = util.buildFilename(PACKAGE_FILENAME, ARCHITECTURE);
-            var config = {
-                "NAME": "", // Application name (no spaces): 
-                "APP_NAME": "", // DuckieTV.app
-                "PKG_NAME": "", // DuckieTV.pkg
-                "VERSION": "", // Application version: " -i "1.0.0
-                "DESCRIPTION": "", // Application description: " -i "${CONF_NAME} v${CONF_VERSION} Application
-                "SRC": "", // Application src directory path: 
-                "ICON_PNG": "", // PNG icon path: 
-                "ICON_OSX": "", // OSX icon (.icns) path: 
-                "osxBgPath": "", // OSX .pkg background file path
-                "CFBundleIdentifier": "", // OSX CFBundleIdentifier: 
-                "LICENSE": "", // License file path: 
-                "OUTPUT_DIR": "" // where to place the output file
-            };
-
-
-            // cd $workingdir
-
-
-            var WORK_DIR = tempdir() + '/nwjs-osx-on-linux-builder';
+            var targetFileName = buildUtils.buildFileName(PACKAGE_FILENAME, ARCHITECTURE);
+            echo("Packaging: " + targetFileName);
+            var WORK_DIR = BINARY_OUTPUT_DIR + '/../osx-installer';
             var APP_BUILD_DIR = WORK_DIR + '/root/Applications';
-            var RESOURCE_DIR = __dirname + "/resources";
-
+            var RESOURCE_DIR = __dirname + "/osx/build";
 
             rm('-rf', WORK_DIR); // init work dir
-            mkdir(WORK_DIR);
+            mkdir('-p', WORK_DIR);
 
             cp('-r', RESOURCE_DIR + '/*', WORK_DIR); // initialize base directory structure
-            cp('-r', config.APP_SOURCE_DIR, APP_BUILD_DIR); // copy source files to installer base
+            cp('-r', BINARY_OUTPUT_DIR, APP_BUILD_DIR); // copy source files to installer base
 
             cd(APP_BUILD_DIR);
-
-            // put optional setup background in place
-            if (config.SETUP_BG_PNG && test('-f', config.SETUP_BG_PNG)) {
-                cp(config.SETUP_BG_PNG, APP_BUILD_DIR + "/flat/Resources/en.lproj/background");
-            } else {
-                echo("Could not locate background png file: " + config.SETUP_BG_PNG);
-                delete config.SETUP_BG_PNG;
-            }
-
-            chmod('-R a+xr', config.APP_NAME); // fix permissions
-
-            // replace config variables in flat/base.pkg/PackageInfo and flat/Distribution
-            patchTemplate(APP_BUILD_DIR + "/flat/base.pkg/PackageInfo", config);
-            patchTemplate(APP_BUILD_DIR + "/flat/Distribution", config);
+            chmod('-R a+xr', "DuckieTV.app"); // fix permissions
 
             // count files and install size and insert them in the install script
-            config.FILES_COUNT = exec("find " + config.APP_NAME + "/root | wc -l");
-            config.LOCAL_INSTALL_KB_SIZE = exec("du -k -s " + config.APP_NAME + "/root | awk '{print $1}'");
+            echo("Counting files: ");
+            var FILES_COUNT = exec("find " + WORK_DIR + "/root | wc -l").trim();
+            echo("Determining full install size in KB");
+            var LOCAL_INSTALL_KB_SIZE = exec("du -k -s " + WORK_DIR + "/root | awk '{print $1}'").trim();
+
+            cat(WORK_DIR + "/flat/Distribution")
+                .replace('{{VERSION}}', shared.getVersion())
+                .replace('{{NIGHTLY}}', options.nightly ? " Nightly" : "")
+                .replace('{{INSTALL_KB_SIZE}}', LOCAL_INSTALL_KB_SIZE)
+                .to(WORK_DIR + "/flat/Distribution");
+
+            // replace config variables in flat/base.pkg/PackageInfo and flat/Distribution
+            cat(WORK_DIR + "/flat/base.pkg/PackageInfo")
+                .replace('{{VERSION}}', shared.getVersion())
+                .replace('{{NIGHTLY}}', options.nightly ? " Nightly" : "")
+                .replace('{{INSTALL_KB_SIZE}}', LOCAL_INSTALL_KB_SIZE)
+                .replace('{{COUNT_FILES}}', FILES_COUNT)
+                .to(WORK_DIR + "/flat/base.pkg/PackageInfo");
 
             // package payload
-            cd(APP_BUILD_DIR + "/" + config.APP_NAME + "/root");
-            exec("(find . | cpio -o --format odc --owner 0:80 | gzip -c )").to(APP_BUILD_DIR + "/" + config.APP_NAME + "/flat/base.pkg/Payload");
+            cd(WORK_DIR + "/root");
+            exec("(find . | cpio -o --format odc --owner 0:80 | gzip -c )> " + WORK_DIR + "/flat/base.pkg/Payload");
 
             // create bill of materials
-            exec("mkbom -u 0 -g 80$ " + APP_BUILD_DIR + "/flat/base.pkg/Bom");
-            cd(APP_BUILD_DIR + "/flat");
-            // store files using xar
-            var OUTPUT_FILE_NAME = config.OUTPUT_DIR + "/" + config.NAME + "-" + config.version + "-OSX.pkg";
-            exec("xar --compression none -cf " + OUTPUT_FILE_NAME + " *");
+            exec("mkbom -u 0 -g 80 . " + WORK_DIR + "/flat/base.pkg/Bom");
+            pushd(WORK_DIR + "/flat");
+            // store files using xar, save it as .pkg file
+            exec("xar --compression none -cf " + shared.BINARY_OUTPUT_DIR + "/" + targetFileName + " *");
 
-            echo("Done building for OSX, see " + OUTPUT_FILE_NAME);
+            echo("Done building for OSX, see " + shared.BINARY_OUTPUT_DIR + "/" + targetFileName);
 
         },
         deploy: function(options) {

@@ -18,6 +18,7 @@ program
     .option("-p, --platform [platforms]", "Build a specific platform (defaults to all: " + sharedConfig.platforms.join(","), function(val) {
         return val.toLowerCase().split(',');
     }, sharedConfig.platforms)
+    .option("-n, --nightly", "do a nightly (version number set to today)")
     .parse(process.argv);
 
 /**

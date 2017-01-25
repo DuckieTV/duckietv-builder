@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<pkg-info overwrite-permissions="true" relocatable="false" identifier="{{CFBundleIdentifier}}.base.pkg" postinstall-action="none" version="{{VERSION}}" format-version="2" generator-version="InstallCmds-502 (14B25)" auth="root">
-    <payload installKBytes="$INSTALL_KB_SIZE$" numberOfFiles="${COUNT_FILES}"/>
+<pkg-info overwrite-permissions="true" relocatable="false" identifier="tv.duckie.base.pkg" postinstall-action="none" version="{{VERSION}}" format-version="2" generator-version="InstallCmds-502 (14B25)" auth="root">
+    <payload installKBytes="{{INSTALL_KB_SIZE}}" numberOfFiles="{{COUNT_FILES}}"/>
     <bundle-version>
-        <bundle id="{{CFBundleIdentifier}}" CFBundleIdentifier="{{CFBundleIdentifier}}" path="./Applications/{{APP_NAME}}.app" CFBundleVersion="1.3.0"/>
+        <bundle id="tv.duckie" CFBundleIdentifier="tv.duckie" path="./Applications/DuckieTV.app" CFBundleVersion="1.3.0"/>
     </bundle-version>
     <update-bundle/>
     <atomic-update-bundle/>

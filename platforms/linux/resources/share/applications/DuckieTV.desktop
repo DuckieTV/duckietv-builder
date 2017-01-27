@@ -1,11 +1,11 @@
 [Desktop Entry]
 Name=DuckieTV
-GenericName=DuckieTV
+GenericName=DuckieTV{{NIGHTLY}}
 Comment=The TV-show Tracker You've been waiting for
 Exec=/usr/bin/DuckieTV
 Terminal=false
 Icon=/usr/share/pixmaps/DuckieTV.xpm
 Type=Application
 Categories=Network;
-Version=PKGVERSION
+Version={{VERSION}}
 Name[en_US]=DuckieTV

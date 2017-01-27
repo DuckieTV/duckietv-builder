@@ -13,10 +13,19 @@ module.exports = {
 
     zipBinary: function(build, zipfilename) {
         echo("Building zip: " + zipfilename);
-        cd(shared.BASE_OUTPUT_DIR);
+        pushd(shared.BASE_OUTPUT_DIR);
         exec('zip -r ' + shared.BINARY_OUTPUT_DIR + "/" + zipfilename + " " + build);
         echo("Done. " + zipfilename);
+        popd();
     },
+
+    tgzBinary: function(build, tgzfilename) {
+        echo("Building tgz: " + tgzfilename);
+        pushd(shared.BASE_OUTPUT_DIR);
+        exec("tar -czf " + tgzfilename + " " + build);
+        echo("Done. " + tgzfilename);
+        popd();
+    }
 
     /**
      * Push a built upload to a github tag
@@ -24,7 +33,7 @@ module.exports = {
      * @param tag github_tag to upload to
      * @param string filename file to upload
      */
-    publishFileToGithubTag: function(repo, github_release_id, filename) {
+        publishFileToGithubTag: function(repo, github_release_id, filename) {
         var command = 'curl -# -XPOST -H "Authorization:token %GITHUB_API_KEY%" -H "Content-Type:application/octet-stream" --data-binary @"%FILENAME%" "https://uploads.github.com/repos/%OWNER_REPO%/releases/%GITHUB_RELEASE_ID%/assets?name=%UPLOAD_PRETTY_NAME%"'
             .replace("%GITHUB_API_KEY%", shared.getCredentials().GITHUB_API_KEY)
             .replace("%OWNER_REPO", repo)

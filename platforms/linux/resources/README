@@ -1,41 +1,38 @@
-------------------------------------------------------------
-$APPNAME - $DESCRIPTION - $VERSION
-------------------------------------------------------------
+-------------------------------------------------------------------------------
+DuckieTV{{NIGHTLY}} - The TV Show Tracker You've been waiting for - {{VERSION}}
+-------------------------------------------------------------------------------
 
-------------------------------------------------------------
+-------------------------------------------------------------------------------
 INSTALL
-------------------------------------------------------------
+-------------------------------------------------------------------------------
 
-To install $APPNAME run "sudo ./setup" in terminal.
+To install DuckieTV run "sudo ./setup" in terminal.
 
-------------------------------------------------------------
+-------------------------------------------------------------------------------
 UNINSTALL
-------------------------------------------------------------
+-------------------------------------------------------------------------------
 
-To remove all $APPNAME components run "sudo ./setup --uninstall" in terminal.
+To remove all DuckieTV components run "sudo ./setup --uninstall" in terminal.
 
 ------------------------------------------------------------
 LICENSE
 ------------------------------------------------------------
 
-The MIT License
+DuckieTV is Free (as in free beer) and Open Source, and comes with as little
+legal nonsense as possible.
 
-Copyright (c) 2015
+You have:
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+- The freedom to run the program as you wish, for any purpose (freedom 0).
+- The freedom to study how the program works, and change it so it does your 
+  computing as you wish (freedom 1).
+- The freedom to redistribute copies so you can help your neighbor (freedom 2).
+- The freedom to distribute copies of your modified versions to others (freedom 3).
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+You do not have:
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+- The permission to ask money for DuckieTV, in any shape, way or form, 
+  for instance by wrapping it in an adware-installer, requiring payment to download 
+  (evolutions of) DuckieTV, or by injecting ads to the program ever. 
+
+  (This applies to the original authors of DuckieTV too) 

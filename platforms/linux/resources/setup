@@ -2,18 +2,18 @@
 
 is_root() {
 if [[ $EUID -ne 0 ]]; then
-    printf "\n\n\n\e[41m  \e[0m Hi \e[1;37m$USER\e[0m, please run \e[1;37m$APPNAME\e[0m script as \e[1;37mroot\e[0m or with \e[1;37msudo\e[0m\n\e[41m\e[0m\n\n\n"
+    printf "\n\n\n\e[41m  \e[0m Hi \e[1;37m$USER\e[0m, please run \e[1;37mDuckieTV\e[0m script as \e[1;37mroot\e[0m or with \e[1;37msudo\e[0m\n\e[41m\e[0m\n\n\n"
 	exit 1
 fi
 }
 
 greet () {
-	printf "\n\n\n\e[44m  \e[0m Hi, This will install \e[1;37m$APPNAME $VERSION\e[0m on your computer.\n\n\n"
+	printf "\n\n\n\e[44m  \e[0m Hi, This will install \e[1;37mDuckieTV{{NIGHTLY}} {{VERSION}}\e[0m on your computer.\n\n\n"
 }
 
 remove_previous_version () {
     if [[ -f "/usr/bin/nw.pak" ]]; then
-        /bin/rm -rf /usr/bin/$APPNAME /usr/bin/nw.pak /usr/share/applications/$APPNAME.desktop usr/share/menu/$APPNAME /usr/share/pixmaps/$APPNAME.png /usr/share/pixmaps/$APPNAME.xpm > /dev/null 2>&1
+        /bin/rm -rf /usr/bin/DuckieTV /usr/bin/nw.pak /usr/share/applications/DuckieTV.desktop usr/share/menu/DuckieTV /usr/share/pixmaps/DuckieTV.png /usr/share/pixmaps/DuckieTV.xpm > /dev/null 2>&1
     fi
 }
 
@@ -54,9 +54,9 @@ install_app () {
 	read INST
 	if [ $INST = 'y' -o $INST = 'Y' ]; then
         printf "\n\n\n\e[43m  \e[0m INSTALLING...\n\n\n"
-        /bin/cp -rv $APPNAME /opt
+        /bin/cp -rv DuckieTV /opt
         /bin/cp -rv share /usr
-        /bin/ln -s /opt/$APPNAME/$APPNAME /usr/bin/$APPNAME
+        /bin/ln -s /opt/DuckieTV/DuckieTV /usr/bin/DuckieTV
 
         paths=(
           "/lib/x86_64-linux-gnu/libudev.so.1" # Ubuntu, Xubuntu, Mint
@@ -69,21 +69,21 @@ install_app () {
         do
           if [ -f $i ]
           then
-            mkdir /opt/$APPNAME/lib
-            ln -sf "$i" /opt/$APPNAME/lib/libudev.so.0
+            mkdir /opt/DuckieTV/lib
+            ln -sf "$i" /opt/DuckieTV/lib/libudev.so.0
             break
           fi
         done
 
-		printf "\n\n\n\e[42m  \e[0m Congrats! You can now find \e[1;37m$APPNAME $VERSION\e[0m in your menu.\n\n\n"
+		printf "\n\n\n\e[42m  \e[0m Congrats! You can now find \e[1;37mDuckieTV{{NIGHTLY}} {{VERSION}}\e[0m in your menu.\n\n\n"
 	fi
 }
 
 is_root;
 
 if [ "${1}" = "--uninstall" ]; then
-	/bin/rm -rf /opt/$APPNAME /usr/share/applications/$APPNAME.desktop /usr/share/menu/$APPNAME /usr/bin/$APPNAME
-	printf '\n\n\n\e[44m  \e[0m Congrats! $APPNAME removed from your machine.\n\n\n'
+	/bin/rm -rf /opt/DuckieTV /usr/share/applications/DuckieTV.desktop /usr/share/menu/DuckieTV /usr/bin/DuckieTV
+	printf '\n\n\n\e[44m  \e[0m Congrats! DuckieTV removed from your machine.\n\n\n'
 	exit 1
 fi
 

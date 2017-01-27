@@ -1,5 +1,5 @@
-?package(PKGNAME): needs="X11" \
+?package(DuckieTV): needs="X11" \
   section="Applications/Network" \
-  title="PKGNAME" \
-  command="/opt/PKGNAME/bin/PKGNAME" \
+  title="DuckieTV" \
+  command="/opt/DuckieTV/bin/duckietv" \
   icon="/usr/share/pixmaps/DuckieTV.xpm"

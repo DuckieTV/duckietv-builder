@@ -14,26 +14,25 @@ var BASE_URL = "https://dl.nwjs.io/v{{VERSION}}/nwjs{{DEBUG}}-v{{VERSION}}-{{PLA
         'linux': 'tar.gz',
         'osx': 'zip',
         'win': 'zip'
-    };
-
-var NWJS_DOWNLOAD_DIR = require('os').homedir() + "/nwjs_download_cache";
+    },
+    NWJS_DOWNLOAD_DIR = require('os').homedir() + "/nwjs_download_cache";
 
 
 function buildUrl() {
     return BASE_URL
-        .replace("{{VERSION}}", version)
-        .replace("{{DEBUG}}", DEBUG ? "-sdk" : "")
-        .replace("{{PLATFORM}}", PLATFORM)
-        .replace("{{ARCHITECTURE}}", ARCHITECTURE)
-        .replace("{{PACKAGE_FORMAT}}", PACKAGE_FORMATS[PLATFORM]);
+        .replace(/{{VERSION}}/g, VERSION)
+        .replace(/{{DEBUG}}/g, DEBUG ? "-sdk" : "")
+        .replace(/{{PLATFORM}}/g, PLATFORM)
+        .replace(/{{ARCHITECTURE}}/g, ARCHITECTURE)
+        .replace(/{{PACKAGE_FORMAT}}/g, PACKAGE_FORMATS[PLATFORM]);
 }
 
 function getFlavour() {
     return FLAVOUR
-        .replace("{{VERSION}}", version)
-        .replace("{{DEBUG}}", DEBUG ? "-sdk" : "")
-        .replace("{{PLATFORM}}", PLATFORM)
-        .replace("{{ARCHITECTURE}}", ARCHITECTURE);
+        .replace(/{{VERSION}}/g, VERSION)
+        .replace(/{{DEBUG}}/g, DEBUG ? "-sdk" : "")
+        .replace(/{{PLATFORM}}/g, PLATFORM)
+        .replace(/{{ARCHITECTURE}}/g, ARCHITECTURE);
 }
 
 function prepareDownloadDir() {
@@ -60,7 +59,7 @@ var public = {
         return public;
     },
 
-    setArchitecture = function(architecture) {
+    setArchitecture: function(architecture) {
         ARCHITECTURE = architecture;
         return public;
     },
@@ -82,12 +81,12 @@ var public = {
     },
 
     extract: function() {
-        var flavour = getFlavour(),
-            extracted = test('-d', flavour);
+        var flavour = getFlavour();
+        pushd(NWJS_DOWNLOAD_DIR);
+        extracted = test('-d', flavour);
 
         if (!extracted) {
             echo(flavour + " is not yet extracted.. extracting.");
-            pushd(NWJS_DOWNLOAD_DIR);
             switch (PACKAGE_FORMATS[PLATFORM]) {
                 case 'tar.gz':
                     exec("tar -zxf ./" + flavour + ".tar.gz");
@@ -96,9 +95,14 @@ var public = {
                     exec("unzip ./" + flavour + ".zip");
                     break;
             }
-            popd();
         }
+        popd();
+        echo("Extracted path for " + flavour + ": " + NWJS_DOWNLOAD_DIR + "/" + flavour);
         return NWJS_DOWNLOAD_DIR + "/" + flavour;
+    },
+
+    get: function() {
+        return public.download().extract();
     }
 }
 

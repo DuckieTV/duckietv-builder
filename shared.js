@@ -10,7 +10,6 @@ module.exports = {
     platforms: ['windows', 'osx', 'linux', 'deb', 'browseraction', 'newtab', 'cordova'],
     modifyPackageJSON: modifyPackageJSON,
     buildTemplateCache: buildTemplateCache,
-    copyFilesToBase: copyFilesToBase,
     processTabHTML: processTabHTML,
     addNightlyStrings: addNightlyStrings,
     copyDefaultResources: copyDefaultResources,
@@ -96,13 +95,6 @@ function processTabHTML() {
 
     // write the modified content to tab.html
     ShellString(tab).to(BASE_OUTPUT_DIR + '/tab.html');
-}
-
-/**
- * Copy all files from existing duckietv dir for now
- */
-function copyFilesToBase() {
-    cp('-r', '/var/www/DuckieTV/*', BUILD_SOURCE_DIR);
 }
 
 /**

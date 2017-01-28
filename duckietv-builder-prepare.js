@@ -3,7 +3,8 @@
 require('shelljs/global');
 var program = require('commander'),
     dateFormat = require('dateformat'),
-    sharedConfig = require('./shared');
+    sharedConfig = require('./shared'),
+    github = require('./github');
 
 config.verbose = false;
 config.fatal = true;
@@ -37,7 +38,9 @@ var buildDirs = [];
 rm('-rf', 'TMP'); // cleanup
 
 
-
+/**
+ * Initialize directory structures
+ */
 program.platform.map(function(platform) {
     defaultDirs.push(sharedConfig.BUILD_DIR + '/' + platform);
     buildDirs.push(sharedConfig.BUILD_DIR + '/' + platform);
@@ -45,13 +48,11 @@ program.platform.map(function(platform) {
 
 mkdir('-p', defaultDirs); // init intial structure
 
-cd(sharedConfig.BUILD_SOURCE_DIR); // move into build source dir
-
-
 /**
  * Make sure we have a copy of DuckieTV to work from
  */
-sharedConfig.copyFilesToBase(); // copy duckietv sources (todo: replace with raw clone)
+cd(sharedConfig.BUILD_SOURCE_DIR); // move into build source dir
+github.downloadFromZip(); // todo: add --tag parameter that'll checkout a previous tag. now grabs trunk of :angular
 
 /**
  * Determine version based on nightly switch, save it to program global and to shared VERSION file.

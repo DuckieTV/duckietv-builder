@@ -1,6 +1,6 @@
 require('shelljs/global');
 var shared = require('../shared'),
-    buildUtils = require(' ../util');
+    buildUtils = require('../util');
 
 
 /**
@@ -10,7 +10,7 @@ var shared = require('../shared'),
 
 var BUILD_DIR = shared.BUILD_DIR + '/linux';
 var PACKAGE_FILENAME = 'DuckieTV-%VERSION%-linux-%ARCHITECTURE%.tar.gz';
-var ARCHITECTURES = ['x32', 'x64'];
+var ARCHITECTURES = ['ia32', 'x64'];
 
 module.exports = {
 
@@ -26,17 +26,23 @@ module.exports = {
                 var ARCH_BUILD_DIR = BUILD_DIR + "-" + arch;
 
                 // create output dir for platform
-                mkdir("-p", ARCH_BUILD_DIR + "/DuckieTV");
+                mkdir("-p", ARCH_BUILD_DIR);
 
                 // copy generic sources 
-                cp('-r', BUILD_DIR + "/*", ARCH_BUILD_DIR + "/DuckieTV")
+                cp('-r', BUILD_DIR + "/*", ARCH_BUILD_DIR)
 
                 // copy sources from __dirname+"/resources" to ARCH_BUILD_DIR
+
                 // download and extract nwjs
+                var EXTRACTED_NWJS = require('../nwjs-downloader')
+                    .setDebug(options.nightly)
+                    .setPlatform('linux')
+                    .setArchitecture(arch)
+                    .get();
+
+                cp('-r', EXTRACTED_NWJS + "/*", ARCH_BUILD_DIR);
 
                 pushd(ARCH_BUILD_DIR);
-
-                exec("chmod a+rw README share/applications/DuckieTV.desktop share/menu/DuckieTV");
 
                 // replace version, architecture and nightly variables
             });
@@ -45,11 +51,11 @@ module.exports = {
         packageBinary: function(options) {
             ARCHITECTURES.map(function(arch) {
                 echo("Packing linux " + arch);
-                var targetFileName = util.buildFilename(PACKAGE_FILENAME, ARCHITECTURE);
+                var targetFileName = buildUtils.buildFileName(PACKAGE_FILENAME, arch);
                 buildUtils.tgzBinary('linux-' + arch, targetFileName);
                 echo("Packaging linux " + arch + " done.");
             });
-        }
+        },
         deploy: function(options) {
 
 

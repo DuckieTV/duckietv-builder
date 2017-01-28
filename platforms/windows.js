@@ -1,6 +1,6 @@
 require('shelljs/global');
 var shared = require('../shared'),
-    util = require(' ../util');
+    util = require('../util');
 
 
 /**

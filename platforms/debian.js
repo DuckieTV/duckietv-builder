@@ -61,12 +61,18 @@ module.exports = {
 
         },
         packageBinary: function(options) {
+            if (!which('debtool')) {
+                echo("\n\ndebtool is required if you want to build debian .deb files. You can install it by executing:\n");
+                echo("curl -LOsS https://github.com/brbsix/debtool/releases/download/v0.2.5/debtool_0.2.5_all.deb && sudo dpkg --install debtool_0.2.5_all.deb && sudo apt-get install --fix-broken");
+                process.exit();
+            }
+
             ARCHITECTURES.map(function(arch) {
-                echo("Packing linux " + arch);
+                echo("Packing debian " + arch);
                 pushd(shared.BUILD_DIR);
                 var targetFileName = buildUtils.buildFileName(PACKAGE_FILENAME, arch);
                 exec("debtool -a --build --md5sums debian-" + arch + " " + shared.BINARY_OUTPUT_DIR + "/" + targetFileName);
-                echo("Packaging linux " + arch + " done.");
+                echo("Packaging debian " + arch + " done.");
             });
 
         },

@@ -1,0 +1,5 @@
+?package(DuckieTV): needs="X11" \
+  section="Applications/Network" \
+  title="DuckieTV" \
+  command="/opt/DuckieTV/bin/DuckieTV" \
+  icon="/usr/share/pixmaps/DuckieTV.xpm"

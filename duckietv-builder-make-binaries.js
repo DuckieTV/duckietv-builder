@@ -10,7 +10,7 @@ config.fatal = true;
 /**
  * Make binaries
  * - puts nwjs in place where needed
- * - performs .apk build via Phonegap Build for android (platform = cordova)
+ * - performs .apk build via Phonegap Build for android 
  */
 program
     .description('compile binaries with optional installers for a platform (default all)')

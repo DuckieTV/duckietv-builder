@@ -5,7 +5,7 @@ var shared = require('../shared'),
     buildUtils = require('../util');
 
 /**
- * DuckieTV Cordova build processor.
+ * DuckieTV Android (Cordova) build processor.
  * The Cordova/Android build step has some quirks:
  * - there cannot be folders starting with _
  * - tab.html should be index.html
@@ -17,7 +17,7 @@ var shared = require('../shared'),
  * Also, a meta viewport tag is inserted to make sure duckietv scales properly.
  */
 
-var BUILD_DIR = shared.BUILD_DIR + '/cordova';
+var BUILD_DIR = shared.BUILD_DIR + '/android';
 var PACKAGE_FILENAME = 'DuckieTV-%VERSION%-android.apk';
 
 module.exports = {
@@ -118,7 +118,7 @@ function initRepository() {
     exec('git remote add origin git@github.com:SchizoDuckie/DuckieTV-Cordova.git');
     exec('git remote add duckietv git@github.com:DuckieTV/DuckieTV.git');
     exec('git add .');
-    exec('git commit -m "Cordova deployment."');
+    exec('git commit -m "Android deployment."');
 }
 
 /**

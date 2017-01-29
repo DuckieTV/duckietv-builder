@@ -7,7 +7,7 @@ var BINARY_OUTPUT_DIR = process.cwd() + "/binaries";
 var NWJS_DOWNLOAD_DIR = require('os').homedir() + "/nwjs_download_cache";
 
 module.exports = {
-    platforms: ['windows', 'osx', 'linux', 'deb', 'browseraction', 'newtab', 'cordova'],
+    platforms: ['windows', 'osx', 'linux', 'debian', 'browseraction', 'newtab', 'android'],
     modifyPackageJSON: modifyPackageJSON,
     buildTemplateCache: buildTemplateCache,
     processTabHTML: processTabHTML,

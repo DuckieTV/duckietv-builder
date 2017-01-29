@@ -8,7 +8,7 @@ var shared = require('../shared'),
  * The osx build processor makes a generic x64 
  */
 var BUILD_DIR = shared.BUILD_DIR + '/osx';
-var BINARY_OUTPUT_DIR = shared.BINARY_OUTPUT_DIR + '/DuckieTV.app';
+var BINARY_OUTPUT_DIR = shared.BUILD_DIR + '/DuckieTV.app';
 var PACKAGE_FILENAME = 'DuckieTV-%VERSION%-OSX-%ARCHITECTURE%.pkg';
 var ARCHITECTURE = 'x64';
 

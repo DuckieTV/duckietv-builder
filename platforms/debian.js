@@ -4,12 +4,12 @@ var shared = require('../shared'),
 
 
 /**
- * DuckieTV linux build processor.
- * The linux build processor makes a generic linux binary and creates a .tgz with a setup script
+ * DuckieTV .deb build processor.
+ * The .deb build takes a generic linux binary and uses debtool to make a .deb
  */
 
-var BUILD_DIR = shared.BUILD_DIR + '/linux';
-var PACKAGE_FILENAME = 'DuckieTV-%VERSION%-linux-%ARCHITECTURE%.tar.gz';
+var BUILD_DIR = shared.BUILD_DIR + '/debian';
+var PACKAGE_FILENAME = 'DuckieTV-%VERSION%-ubuntu-%ARCHITECTURE%.deb';
 var ARCHITECTURES = ['ia32', 'x64'];
 
 module.exports = {
@@ -20,18 +20,19 @@ module.exports = {
             shared.modifyPackageJSON(options, BUILD_DIR);
             shared.patchManifest(BUILD_DIR, ['dist/background.js']);
         },
+
         makeBinary: function(options) {
 
             ARCHITECTURES.map(function(arch) {
-                var ARCH_BUILD_DIR = BUILD_DIR + "-" + arch + "/DuckieTV";
+                var ARCH_BUILD_DIR = BUILD_DIR + "-" + arch + "/opt/DuckieTV";
 
                 // create output dir for platform
                 mkdir("-p", ARCH_BUILD_DIR);
 
                 // copy generic sources 
-                cp('-r', BUILD_DIR + "/*", BUILD_DIR + "-" + arch + "/DuckieTV")
+                cp('-r', BUILD_DIR + "/*", ARCH_BUILD_DIR)
 
-                cp('-r', __dirname + "/linux/*", BUILD_DIR + "-" + arch);
+                cp('-r', __dirname + "/debian/*", BUILD_DIR + "-" + arch);
 
                 // download and extract nwjs
                 var EXTRACTED_NWJS = require('../nwjs-downloader')
@@ -46,30 +47,30 @@ module.exports = {
 
                 pushd(BUILD_DIR + "-" + arch);
 
-                cat('setup')
+                cat('DEBIAN/control')
+                    .replace(/{{ARCHITECTURE}}/g, arch)
                     .replace(/{{VERSION}}/g, shared.getVersion())
-                    .replace(/{{NIGHTLY}}/g, options.nightly ? " Nightly" : "")
-                    .to('setup');
-                cat('README')
-                    .replace(/{{VERSION}}/g, shared.getVersion())
-                    .replace(/{{NIGHTLY}}/g, options.nightly ? " Nightly" : "")
-                    .to('README');
-                exec("chmod -R 0644 share/*");
-                popd();
+                    .replace(/{{NIGHTLY}}/g, options.nightly ? ".nightly" : "")
+                    .to('DEBIAN/control');
 
+                exec("chmod -R 0755 usr/share/*");
+                exec("chmod -R 0755 opt/*");
+
+                popd();
             });
 
         },
         packageBinary: function(options) {
             ARCHITECTURES.map(function(arch) {
                 echo("Packing linux " + arch);
+                pushd(shared.BUILD_DIR);
                 var targetFileName = buildUtils.buildFileName(PACKAGE_FILENAME, arch);
-                buildUtils.tgzBinary('linux-' + arch, targetFileName);
+                exec("debtool -a --build --md5sums debian-" + arch + " " + shared.BINARY_OUTPUT_DIR + "/" + targetFileName);
                 echo("Packaging linux " + arch + " done.");
             });
+
         },
         deploy: function(options) {
-
 
             if (options.nightly && options.deploy) {
                 //pushToGithub();

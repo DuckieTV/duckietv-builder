@@ -3,6 +3,6 @@ Priority: optional
 Section: Media
 Installed-Size: 95328
 Maintainer: DuckieTV <tvduckie@gmail.com>
-Architecture: {{ACHITECTURE}}
-Version: {{VERSION}}
+Architecture: {{ARCHITECTURE}}
+Version: {{VERSION}}{{NIGHTLY}}
 Description: The TV Show Tracker You've been waiting for 

@@ -15,14 +15,14 @@ Features:
 
 Todo:
 -----
-* allow publishing to the webstore and cordova builds by using API keys where possible
-* convert changelog to js
-* (unlisted) nightly builds for the chrome webstore! \o/
-* nwjs build process
-* installers (figure out x32/x64)
-* install on buildbot
-* convert XEM fetcher
-* confirmation 'areyouversure' when publishing non-nightlies to production
+- [ ] allow publishing to the webstore and cordova builds by using API keys where possible
+- [ ] convert changelog to js
+- [ ] \(unlisted) nightly builds for the chrome webstore! \o/
+- [x] nwjs build process
+- [x] installers (figure out x32/x64)
+- [ ] install on buildbot
+- [ ] convert XEM fetcher
+- [ ] confirmation 'areyouversure' when publishing non-nightlies to production
 
 Usage:
 ------

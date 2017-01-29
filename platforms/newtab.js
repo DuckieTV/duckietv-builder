@@ -1,6 +1,6 @@
 require('shelljs/global');
 var shared = require('../shared'),
-    buildUtils = require(' ../util');
+    buildUtils = require('../util');
 
 
 /**
@@ -26,9 +26,9 @@ module.exports = {
             cp('-r', BUILD_DIR, shared.BASE_OUTPUT_DIR);
         },
         packageBinary: function(options) {
-            var targetFileName = util.buildFilename(PACKAGE_FILENAME);
+            var targetFileName = buildUtils.buildFileName(PACKAGE_FILENAME);
             buildUtils.zipBinary('newtab', targetFileName);
-        }
+        },
         deploy: function(options) {
 
             if (options.nightly && options.deploy) {

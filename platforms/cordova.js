@@ -2,7 +2,7 @@ require('shelljs/global')
 
 var shared = require('../shared'),
     request = require('superagent'),
-    buildUtils = require(' ../buildUtils');
+    buildUtils = require('../util');
 
 /**
  * DuckieTV Cordova build processor.

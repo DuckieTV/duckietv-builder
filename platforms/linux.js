@@ -23,15 +23,15 @@ module.exports = {
         makeBinary: function(options) {
 
             ARCHITECTURES.map(function(arch) {
-                var ARCH_BUILD_DIR = BUILD_DIR + "-" + arch;
+                var ARCH_BUILD_DIR = BUILD_DIR + "-" + arch + "/DuckieTV";
 
                 // create output dir for platform
                 mkdir("-p", ARCH_BUILD_DIR);
 
                 // copy generic sources 
-                cp('-r', BUILD_DIR + "/*", ARCH_BUILD_DIR)
+                cp('-r', BUILD_DIR + "/*", BUILD_DIR + "-" + arch + "/DuckieTV")
 
-                // copy sources from __dirname+"/resources" to ARCH_BUILD_DIR
+                cp('-r', __dirname + "/linux/resources/*", BUILD_DIR + "-" + arch);
 
                 // download and extract nwjs
                 var EXTRACTED_NWJS = require('../nwjs-downloader')
@@ -41,10 +41,21 @@ module.exports = {
                     .get();
 
                 cp('-r', EXTRACTED_NWJS + "/*", ARCH_BUILD_DIR);
+                rm('-rf', BUILD_DIR + "-" + arch + "/DEBIAN");
+                //rename nw executable to DuckieTV-bin, so the wrapper script can run
+                mv(ARCH_BUILD_DIR + "/nw", ARCH_BUILD_DIR + "/DuckieTV-bin");
 
-                pushd(ARCH_BUILD_DIR);
+                pushd(BUILD_DIR + "-" + arch);
 
-                // replace version, architecture and nightly variables
+                cat('setup')
+                    .replace(/{{VERSION}}/g, shared.getVersion())
+                    .replace(/{{NIGHTLY}}/g, options.nightly ? " Nightly" : "")
+                    .to('setup');
+                cat('README')
+                    .replace(/{{VERSION}}/g, shared.getVersion())
+                    .replace(/{{NIGHTLY}}/g, options.nightly ? " Nightly" : "")
+                    .to('README');
+                popd();
             });
 
         },

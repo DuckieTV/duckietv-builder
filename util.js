@@ -13,16 +13,16 @@ module.exports = {
 
     zipBinary: function(build, zipfilename) {
         echo("Building zip: " + zipfilename);
-        pushd(shared.BASE_OUTPUT_DIR);
-        exec('zip -r ' + shared.BINARY_OUTPUT_DIR + "/" + zipfilename + " " + build);
+        pushd(shared.BUILD_DIR);
+        exec('zip -q -r ' + shared.BINARY_OUTPUT_DIR + "/" + zipfilename + " " + build);
         echo("Done. " + zipfilename);
         popd();
     },
 
     tgzBinary: function(build, tgzfilename) {
         echo("Building tgz: " + tgzfilename);
-        pushd(shared.BASE_OUTPUT_DIR);
-        exec("tar -czf " + tgzfilename + " " + build);
+        pushd(shared.BUILD_DIR);
+        exec("tar -czf " + shared.BINARY_OUTPUT_DIR + "/" + tgzfilename + " " + build);
         echo("Done. " + tgzfilename);
         popd();
     },

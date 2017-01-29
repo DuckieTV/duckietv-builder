@@ -75,8 +75,8 @@ module.exports = {
 
             // patch Contents/info.plist with version number and stuff
             cat(__dirname + '/osx/Info.plist')
-                .replace("{{VERSION}}", shared.getVersion())
-                .replace("{{NIGHTLY}}", options.nightly ? " Nightly" : "")
+                .replace(/{{VERSION}}/g, shared.getVersion())
+                .replace(/{{NIGHTLY}}/g, options.nightly ? " Nightly" : "")
                 .to(BINARY_OUTPUT_DIR + "/Contents/Info.plist")
             echo("Done making binary");
         },

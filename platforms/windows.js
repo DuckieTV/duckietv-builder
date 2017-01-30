@@ -1,7 +1,8 @@
 require('shelljs/global');
 var shared = require('../shared'),
-    util = require('../util');
+    buildUtils = require('../util');
 
+config.verbose = true;
 
 /**
  * DuckieTV windows build processor.
@@ -10,7 +11,8 @@ var shared = require('../shared'),
 
 var BUILD_DIR = shared.BUILD_DIR + '/windows';
 var PACKAGE_FILENAME = 'DuckieTV-%VERSION%-windows-%ARCHITECTURE%.zip';
-var ARCHITECTURES = ['x32', 'x64'];
+var INSTALLER_FILENAME = 'DuckieTV-%VERSION%-windows-%ARCHITECTURE%.exe';
+var ARCHITECTURES = ['ia32', 'x64'];
 
 module.exports = {
 
@@ -22,36 +24,61 @@ module.exports = {
         },
 
         makeBinary: function(options) {
-            /**
-             for arch in ${architechture[@]}; do
-                    cd ${WORKING_DIR}
-                    cp -r ${CURRENT_DIR}/resources/windows/app.nsi ${WORKING_DIR}
-                    cp -r $(get_value_by_key windowsIconPath) ${WORKING_DIR}/WORK_DIR/win-${arch}/latest-git/
-                    # Replce paths and vars in nsi script
-                    replace \
-                        NWJS_APP_REPLACE_APPNAME "$(get_value_by_key name)" \
-                        NWJS_APP_REPLACE_DESCRIPTION "$(get_value_by_key description)" \
-                        NWJS_APP_REPLACE_LICENSE $(get_value_by_key license) \
-                        NWJS_APP_REPLACE_VERSION $(get_value_by_key version) \
-                        NWJS_APP_REPLACE_EXE_NAME $(get_value_by_key name)-$(get_value_by_key version)-Windows-${arch}.exe \
-                        NWJS_APP_REPLACE_INC_FILE_1 ${WORKING_DIR}/WORK_DIR/win-${arch}/latest-git/\*.\* \
-                        NWJS_APP_REPLACE_ICO_FILE_NAME $(basename $(get_value_by_key windowsIconPath)) \
-                        NWJS_APP_REPLACE_INC_FILE_ICO $(get_value_by_key windowsIconPath) -- app.nsi;
-                    makensis app.nsi
-                    # Clean a bit
-                    rm -rf ${WORKING_DIR}/$(get_value_by_key name).nsi;
-                    mv ${WORKING_DIR}/$(get_value_by_key name)-$(get_value_by_key version)-Windows-${arch}.exe ${RELEASE_DIR}
-                    printf "\nDone Windows ${arch}\n"
-                done
-            */
+
+
+            ARCHITECTURES.map(function(arch) {
+                var ARCH_BUILD_DIR = BUILD_DIR + "-" + arch + "/DuckieTV";
+
+                // create output dir for platform
+                mkdir("-p", ARCH_BUILD_DIR);
+
+                // copy generic sources 
+                cp('-r', BUILD_DIR + "/*", BUILD_DIR + "-" + arch + "/DuckieTV")
+
+                cp('-r', __dirname + "/windows/*", BUILD_DIR + "-" + arch);
+
+                // download and extract nwjs
+                var EXTRACTED_NWJS = require('../nwjs-downloader')
+                    .setDebug(options.nightly)
+                    .setPlatform('win')
+                    .setArchitecture(arch)
+                    .get();
+
+                cp('-r', EXTRACTED_NWJS + "/*", ARCH_BUILD_DIR);
+                //rename nw executable to DuckieTV-bin, so the wrapper script can run
+                mv(ARCH_BUILD_DIR + "/nw.exe", ARCH_BUILD_DIR + "/DuckieTV.exe");
+
+                pushd(BUILD_DIR + "-" + arch);
+
+                cat('DuckieTV/app.nsi')
+                    .replace(/{{ARCHITECTURE}}/g, arch)
+                    .replace(/{{ICONFILE}}/g, 'img/favicon.ico')
+                    .replace(/{{LICENSE}}/g, 'LICENSE.md')
+                    .replace(/{{VERSION}}/g, shared.getVersion())
+                    .replace(/{{NIGHTLY}}/g, options.nightly ? "Nightly " : "")
+                    .replace(/{{SETUP_OUTPUT_FILENAME}}/g, buildUtils.buildFileName(INSTALLER_FILENAME, arch))
+                    .to('DuckieTV/app.nsi');
+
+                // hijack resourcehacker nodejs module's executable so we can pipe it through sync exec() function
+                var path = require('path');
+                pushd('DuckieTV');
+                var RESHACKER_PATH = path.join(path.dirname(require.resolve('resourcehacker')), '../bin/ResourceHacker.exe');
+                exec("wine " + RESHACKER_PATH + ' -addoverwrite "DuckieTV.exe", "DuckieTV.exe", "img/favicon.ico", ICONGROUP, IDR_MAINFRAME, 1033');
+                exec("wine " + RESHACKER_PATH + ' -addoverwrite "DuckieTV.exe", "DuckieTV.exe", "' + __dirname + '/windows/fileinfo.res", VERSIONINFO, 1, 1033');
+                exec("makensis app.nsi");
+                popd();
+                popd();
+
+            });
         },
         packageBinary: function(options) {
             ARCHITECTURES.map(function(arch) {
                 echo("Packing windows " + arch);
-                var targetFileName = util.buildFilename(PACKAGE_FILENAME, ARCHITECTURE);
+                var targetFileName = buildUtils.buildFileName(PACKAGE_FILENAME, ARCHITECTURE);
                 buildUtils.zipBinary('windows-' + arch, targetFileName);
                 echo("Packaging windows " + arch + " done.");
             });
+
         },
         deploy: function(options) {
             ARCHITECTURES.map(function(arch) {

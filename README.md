@@ -19,7 +19,7 @@ Todo:
 - [ ] convert changelog to js
 - [ ] \(unlisted) nightly builds for the chrome webstore! \o/
 - [x] nwjs build process
-- [x] installers (figure out x32/x64)
+- [x] installers
 - [ ] install on buildbot
 - [ ] convert XEM fetcher
 - [ ] confirmation 'areyouversure' when publishing non-nightlies to production

@@ -23,6 +23,7 @@
     "dateformat": "^2.0.0",
     "inquirer": "^3.0.1",
     "ng-templatecache": "^0.1.4",
+    "resourcehacker": "^4.2.51",
     "shelljs": "^0.7.6",
     "sleep": "^5.1.0",
     "superagent": "^3.3.2",

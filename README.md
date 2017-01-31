@@ -20,6 +20,7 @@ Todo:
 - [ ] \(unlisted) nightly builds for the chrome webstore! \o/
 - [x] nwjs build process
 - [x] installers
+- [ ] upload to github for nightly releases
 - [ ] install on buildbot
 - [ ] convert XEM fetcher
 - [ ] confirmation 'areyouversure' when publishing non-nightlies to production

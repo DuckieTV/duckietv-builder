@@ -19,6 +19,7 @@ var shared = require('../shared'),
 
 var BUILD_DIR = shared.BUILD_DIR + '/android';
 var PACKAGE_FILENAME = 'DuckieTV-%VERSION%-android.apk';
+var PHONEGAP_DOWNLOAD_URL = "https://build.phonegap.com/apps/1473540/download/android";
 
 module.exports = {
 
@@ -42,14 +43,20 @@ module.exports = {
         makeBinary: function(options) {
             initRepository();
             pushToCordovaGithub();
-            triggerPhonegapBuild();
+            try {
+                triggerPhonegapBuild();
+            } catch (e) {
+                echo(e);
+            }
         },
 
         /**
          * Download the previously triggered phonegapbuild to the output dir
          */
         packageBinary: function() {
-            downloadPhonegapBuild(shared.OUTPUT_DIR + '/' + PACKAGE_FILENAME);
+            pushd(shared.BINARY_OUTPUT_DIR)
+            exec("curl -L -o " + buildUtils.buildFileName(PACKAGE_FILENAME) + " " + PHONEGAP_DOWNLOAD_URL);
+            popd();
         },
         deploy: function(options) {
 
@@ -68,6 +75,11 @@ module.exports = {
     }
 
 };
+
+function downloadPhonegapBuild(target_dir) {
+    pushd(target_dir);
+}
+
 
 /**
  * Give the android build a dedicated viewport so that it looks the same on each device.

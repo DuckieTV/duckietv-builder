@@ -77,8 +77,9 @@ module.exports = {
         packageBinary: function(options) {
             ARCHITECTURES.map(function(arch) {
                 echo("Packing windows " + arch);
-                var targetFileName = buildUtils.buildFileName(PACKAGE_FILENAME, ARCHITECTURE);
-                buildUtils.zipBinary('windows-' + arch, targetFileName);
+                var targetFileName = buildUtils.buildFileName(PACKAGE_FILENAME, arch);
+                var installerFile = buildUtils.buildFileName(INSTALLER_FILENAME, arch);
+                buildUtils.zipBinary('windows-' + arch, targetFileName, '*.exe');
                 echo("Packaging windows " + arch + " done.");
             });
 

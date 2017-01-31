@@ -54,7 +54,7 @@ module.exports = {
                     .replace(/{{VERSION}}/g, shared.getVersion())
                     .replace(/{{NIGHTLY}}/g, options.nightly ? " Nightly" : "")
                     .to('README');
-                exec("chmod -R 0644 share/*");
+                exec("chmod -R 0755 share/*");
                 popd();
 
             });

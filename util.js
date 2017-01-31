@@ -11,18 +11,18 @@ module.exports = {
     },
 
 
-    zipBinary: function(build, zipfilename) {
+    zipBinary: function(build, zipfilename, filemask) {
         echo("Building zip: " + zipfilename);
-        pushd(shared.BUILD_DIR);
-        exec('zip -q -r ' + shared.BINARY_OUTPUT_DIR + "/" + zipfilename + " " + build);
+        pushd(shared.BUILD_DIR + "/" + build);
+        exec('zip -q -r ' + shared.BINARY_OUTPUT_DIR + "/" + zipfilename + " " + (filemask || '*'));
         echo("Done. " + zipfilename);
         popd();
     },
 
     tgzBinary: function(build, tgzfilename) {
         echo("Building tgz: " + tgzfilename);
-        pushd(shared.BUILD_DIR);
-        exec("tar -czf " + shared.BINARY_OUTPUT_DIR + "/" + tgzfilename + " " + build);
+        pushd(shared.BUILD_DIR + "/" + build);
+        exec("tar -czf " + shared.BINARY_OUTPUT_DIR + "/" + tgzfilename + " " + '*');
         echo("Done. " + tgzfilename);
         popd();
     },

@@ -84,18 +84,9 @@ module.exports = {
             });
 
         },
-        deploy: function(options) {
-            ARCHITECTURES.map(function(arch) {
-
-                if (options.nightly && options.deploy) {
-                    buildUtils.publishFileToGithubTag('DuckieTV/Nightlies', options.GITHUB_TAG, shared.OUTPUT_DIR + '/' + buildUtils.buildFilename(PACKAGE_FILENAME));
-                }
-
-                if (!options.nightly && options.deploy && options.iamsure) {
-                    buildUtils.publishFileToGithubTag('SchizoDuckie/DuckieTV', options.GITHUB_TAG, shared.OUTPUT_DIR + '/' + buildUtils.buildFilename(PACKAGE_FILENAME));
-                }
-
-
+        publish: function(options) {
+            return ARCHITECTURES.map(function(arch) {
+                return buildUtils.buildFilename(PACKAGE_FILENAME);
             });
 
         }

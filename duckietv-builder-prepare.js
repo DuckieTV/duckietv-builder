@@ -75,10 +75,10 @@ if (program.nightly) {
  * For each supported platform, run the preProcessor that does platform-specific things.
  */
 program.platform.map(function(platform) {
-    echo("Running build processor for " + platform);
+    echo("Running prepare processor for " + platform);
     var processor = require('./platforms/' + platform).processor;
     processor.preProcess(program);
     echo("Done processing " + platform);
 });
 
-echo("Build preprocessor done");
+echo("Prepare processor done");

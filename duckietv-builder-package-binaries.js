@@ -30,10 +30,10 @@ echo("Packaging binaries");
  * For each supported platform, run the preProcessor that does platform-specific things.
  */
 program.platform.map(function(platform) {
-    echo("Running build processor for " + platform);
+    echo("Running packager processor for " + platform);
     var processor = require('./platforms/' + platform).processor;
     processor.packageBinary(program);
     echo("Done processing " + platform);
 });
 
-echo("Binary processor done");
+echo("Package processor done");

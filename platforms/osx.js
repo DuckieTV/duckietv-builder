@@ -151,13 +151,10 @@ module.exports = {
             echo("Done building for OSX, see " + shared.BINARY_OUTPUT_DIR + "/" + targetFileName);
 
         },
-        deploy: function(options) {
-
-            if (options.nightly && options.deploy) {
-                //pushToGithub();
-            }
-
-
+        publish: function(options) {
+            return ARCHITECTURES.map(function(arch) {
+                return buildUtils.buildFilename(PACKAGE_FILENAME);
+            });
         }
     }
 

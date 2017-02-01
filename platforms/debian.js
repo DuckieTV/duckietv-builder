@@ -76,12 +76,11 @@ module.exports = {
             });
 
         },
-        deploy: function(options) {
+        publish: function(options) {
 
-            if (options.nightly && options.deploy) {
-                //pushToGithub();
-            }
-
+            return ARCHITECTURES.map(function(arch) {
+                return buildUtils.buildFilename(PACKAGE_FILENAME);
+            });
 
         }
     }

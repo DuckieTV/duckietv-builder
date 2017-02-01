@@ -34,16 +34,27 @@ module.exports = {
             var targetFileName = buildUtils.buildFileName(PACKAGE_FILENAME);
             buildUtils.zipBinary('browseraction', targetFileName);
         },
-        deploy: function(options) {
+        publish: function(options) {
 
-            if (options.nightly && options.deploy) {
-                buildUtils.publishFileToGithubTag('DuckieTV/Nightlies', options.GITHUB_TAG, shared.OUTPUT_DIR + '/' + buildUtils.buildFilename(PACKAGE_FILENAME));
+            var credentials = shared.getCredentials();
+            var APP_ID = options.nightly ? credentials.EXTENSION_ID_BROWSER_ACTION_NIGHTLY : credentials.EXTENSION_ID_BROWSER_ACTION;
+            if (!options.nightly && !options.iamverysure) {
+                echo("Not publishing production version! --iamverysure missing from command");
             }
 
-            if (!options.nightly && options.deploy && options.iamsure) {
-                buildUtils.publishFileToGithubTag('SchizoDuckie/DuckieTV', options.GITHUB_TAG, shared.OUTPUT_DIR + '/' + buildUtils.buildFilename(PACKAGE_FILENAME));
-            }
 
+            var auth = exec('curl https://accounts.google.com/o/oauth2/token -d "client_id=' + credentials.CHROME_WEBSTORE_CLIENT_ID + '&client_secret=' + credentials.CHROME_WEBSTORE_CLIENT_SECRET + '&code=' + credentials.CHROME_WEBSTORE_CODE + '&grant_type=authorization_code&redirect_uri=urn:ietf:wg:oauth:2.0:oob"');
+            echo(auth);
+
+            process.exit();
+
+            exec(['curl',
+                '-H "Authorization: Bearer ' + credentials.CHROME_WEBSTORE_REFRESH_TOKEN + '"',
+                '-H "x-goog-api-version: 2"',
+                '-X PUT -T ' + shared.BINARY_OUTPUT_DIR + "/" + buildUtils.buildFileName(PACKAGE_FILENAME),
+                '-v https://www.googleapis.com/upload/chromewebstore/v1.1/items/' + APP_ID
+            ].join(" "));
+            return buildUtils.buildFileName(PACKAGE_FILENAME);
 
         }
     }

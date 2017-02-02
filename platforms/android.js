@@ -33,6 +33,9 @@ module.exports = {
             patchDepsJS();
             renameLocalesDir();
             shared.patchManifest(BUILD_DIR, ['dist/background.js', 'dist/launch.js']);
+            if (options.nightly) {
+                shared.addNightlyStrings(BUILD_DIR);
+            }
 
         },
 

@@ -19,6 +19,9 @@ module.exports = {
         preProcess: function(options) {
             shared.modifyPackageJSON(options, BUILD_DIR);
             shared.patchManifest(BUILD_DIR, ['dist/background.js']);
+            if (options.nightly) {
+                shared.addNightlyStrings(BUILD_DIR);
+            }
         },
 
         makeBinary: function(options) {

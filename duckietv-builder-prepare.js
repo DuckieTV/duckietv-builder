@@ -67,10 +67,6 @@ sharedConfig.buildTemplateCache(); // concat all html files into a templatecache
 sharedConfig.processTabHTML(); // grab all resources in tab.html and process / minify them for dist.
 sharedConfig.copyDefaultResources(buildDirs); // copy the default resources (templates, images, fixtures) that are shared between all builds
 
-if (program.nightly) {
-    sharedConfig.addNightlyStrings(buildDirs); // add the 'Nightly' names in the right places.
-}
-
 /**
  * For each supported platform, run the preProcessor that does platform-specific things.
  */

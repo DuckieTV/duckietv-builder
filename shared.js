@@ -14,6 +14,7 @@ module.exports = {
     addNightlyStrings: addNightlyStrings,
     copyDefaultResources: copyDefaultResources,
     getCredentials: getCredentials,
+    putCredentials: putCredentials,
     patchManifest: patchManifest,
     getVersion: getVersion,
     BUILD_DIR: BUILD_DIR,
@@ -36,9 +37,9 @@ function copyDefaultResources(targets) {
     });
 }
 
-function addNightlyStrings(targets) {
+function addNightlyStrings(SOURCES_DIR) {
     echo('Nightly mode, patching locales');
-    cd(BUILD_SOURCE_DIR);
+    pushd(SOURCES_DIR);
     find("_locales/*/messages.json").map(function(file) {
         var translation = JSON.parse(cat(file));
         translation.appNameNewTab.message += " - Nightly";
@@ -47,6 +48,7 @@ function addNightlyStrings(targets) {
         translation.appShortNameBrowserAction.message += " - Nightly";
         ShellString(JSON.stringify(translation, null, "\t")).to(file);
     });
+    popd();
 }
 
 
@@ -141,9 +143,18 @@ function getCredentials() {
     }
 }
 
+function putCredentials(credentials) {
+    var homedir = '/home/' + exec('whoami').trim();
+    if (require('fs').existsSync(homedir + '/.duckietv-builder.json')) {
+        ShellString(JSON.stringify(credentials, null, "\t")).to(homedir + "/.duckietv-builder.json");
+    } else {
+        throw new Error("No " + homedir + "/.duckietv-builder.json available. Use the template in ./duckietv-builder.json-template");
+    }
+}
+
 function patchManifest(BUILD_DIR, backgroundScripts) {
     var manifest = JSON.parse(cat(BUILD_DIR + '/manifest.json'));
-    manifest.version = getVersion();
+    manifest.version = cat(BUILD_DIR + "/VERSION");
     manifest.background.scripts = backgroundScripts;
     ShellString(JSON.stringify(manifest, null, "\t")).to(BUILD_DIR + "/manifest.json");
 }

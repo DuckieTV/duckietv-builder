@@ -1,6 +1,7 @@
 require('shelljs/global');
 var shared = require('../shared'),
-    buildUtils = require('../util');
+    buildUtils = require('../util'),
+    dateFormat = require('dateformat');
 
 
 /**
@@ -18,8 +19,12 @@ module.exports = {
     processor: {
 
         preProcess: function(options) {
-            shared.patchManifest(BUILD_DIR, ['dist/background.js']);
-            shared.modifyPackageJSON(options, BUILD_DIR);
+            if (options.nightly) {
+                ShellString(dateFormat('yyyy.m.dHM')).to(BUILD_DIR + '/VERSION'); // set nightly version to work without prefix zeros and separated by dots.
+            }
+            if (options.nightly) {
+                shared.addNightlyStrings(BUILD_DIR);
+            }
         },
 
         makeBinary: function(options) {
@@ -32,16 +37,41 @@ module.exports = {
         publish: function(options) {
             var credentials = shared.getCredentials();
             var APP_ID = options.nightly ? credentials.EXTENSION_ID_NEWTAB_NIGHTLY : credentials.EXTENSION_ID_NEWTAB;
-            if (options.nightly && !options.iamverysure) {
+            if (!options.nightly && !options.iamverysure) {
                 echo("Not publishing production version! --iamverysure missing from command");
             }
+
+            // grab fresh auth token only when needed
+            if (new Date().getTime() > credentials.CHROME_WEBSTORE_REFRESH_TOKEN_MAX_AGE) {
+                var response = JSON.parse(exec('curl "https://www.googleapis.com/oauth2/v4/token" -d "client_id=' + credentials.CHROME_WEBSTORE_CLIENT_ID + '&client_secret=' + credentials.CHROME_WEBSTORE_CLIENT_SECRET + '&code=' + credentials.CHROME_WEBSTORE_REFRESH_TOKEN + '&grant_type=authorization_code&redirect_uri=urn:ietf:wg:oauth:2.0:oob"').trim());
+                if (response.error) {
+                    process.exit();
+                }
+                credentials.CHROME_WEBSTORE_REFRESH_TOKEN = response.refresh_token;
+                credentials.CHROME_WEBSTORE_CODE = response.access_token;
+                shared.putCredentials(credentials);
+
+            }
+
+            // upload zip
+            echo("Uploading to chrome webstore");
             exec(['curl',
-                '-H "Authorization: Bearer ' + credentials.CHROME_WEBSTORE_REFRESH_TOKEN + '"',
+                '-H "Authorization: Bearer ' + credentials.CHROME_WEBSTORE_CODE + '"',
                 '-H "x-goog-api-version: 2"',
-                '-X PUT -T ' + shared.BINARY_OUTPUT_DIR + "/" + buildUtils.buildFilename(PACKAGE_FILENAME),
+                '-X PUT -T ' + shared.BINARY_OUTPUT_DIR + "/" + buildUtils.buildFileName(PACKAGE_FILENAME),
                 '-v https://www.googleapis.com/upload/chromewebstore/v1.1/items/' + APP_ID
             ].join(" "));
-            return buildUtils.buildFilename(PACKAGE_FILENAME);
+            // publish it
+            echo("Publishing chrome webstore draft");
+            echo(['curl',
+                '-H "Authorization: Bearer ' + credentials.CHROME_WEBSTORE_CODE + '"',
+                '-H "x-goog-api-version: 2"',
+                '-H "Content-Length: 0"',
+                '-X POST',
+                '-v https://www.googleapis.com/chromewebstore/v1.1/items/' + APP_ID + '/publish'
+            ].join(" "));
+
+            return buildUtils.buildFileName(PACKAGE_FILENAME);
 
         }
     }

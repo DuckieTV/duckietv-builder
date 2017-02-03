@@ -42,15 +42,17 @@ module.exports = {
             }
 
             // grab fresh auth token only when needed
-            if (new Date().getTime() > credentials.CHROME_WEBSTORE_REFRESH_TOKEN_MAX_AGE) {
+            if (Math.floor(new Date().getTime() / 1000) > credentials.CHROME_WEBSTORE_REFRESH_TOKEN_MAX_AGE) {
                 var response = JSON.parse(exec('curl "https://www.googleapis.com/oauth2/v4/token" -d "client_id=' + credentials.CHROME_WEBSTORE_CLIENT_ID + '&client_secret=' + credentials.CHROME_WEBSTORE_CLIENT_SECRET + '&code=' + credentials.CHROME_WEBSTORE_REFRESH_TOKEN + '&grant_type=authorization_code&redirect_uri=urn:ietf:wg:oauth:2.0:oob"').trim());
                 if (response.error) {
                     process.exit();
                 }
                 credentials.CHROME_WEBSTORE_REFRESH_TOKEN = response.refresh_token;
                 credentials.CHROME_WEBSTORE_CODE = response.access_token;
+                credentials.CHROME_WEBSTORE_REFRESH_TOKEN_MAX_AGE = Math.floor(new Date().getTime() / 1000) + response.expires_in;
                 shared.putCredentials(credentials);
-
+                echo("Updated credentials:");
+                echo(response);
             }
 
             // upload zip

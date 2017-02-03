@@ -14,7 +14,6 @@ config.fatal = true;
  * - performs .apk build via Phonegap Build for android (platform = cordova)
  */
 program
-    .command('publish', 'publish [--no-nightly --iamverysure]  ')
     .description('publish the binaries to github and the chrome web store (if configured)')
     .option("-p, --platform [platforms]", "publish a specific platform (defaults to all: " + sharedConfig.platforms.join(","), function(val) {
         return val.toLowerCase().split(',');

@@ -15,9 +15,9 @@ Features:
 
 Todo:
 -----
-- [ ] allow publishing to the webstore and cordova builds by using API keys where possible
+- [x] allow publishing to the webstore and cordova builds by using API keys where possible
 - [ ] convert changelog to js
-- [ ] \(unlisted) nightly builds for the chrome webstore! \o/
+- [x] \(unlisted) nightly builds for the chrome webstore! \o/
 - [x] nwjs build process
 - [x] installers
 - [ ] upload to github for nightly releases

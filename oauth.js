@@ -13,17 +13,20 @@ module.exports = {
         }
 
         credentials.CHROME_WEBSTORE_REFRESH_TOKEN = response.refresh_token;
+        credentials.CHROME_WEBSTORE_ACCESS_TOKEN = response.access_token
         credentials.CHROME_WEBSTORE_CODE = response.access_token;
         credentials.CHROME_WEBSTORE_REFRESH_TOKEN_MAX_AGE = Math.floor(new Date().getTime() / 1000) + response.expires_in;
         shared.putCredentials(credentials);
-
         return response;
     },
 
     refreshTokenIfNeeded: function() {
         var credentials = shared.getCredentials();
+
+        var info = JSON.parse(exec('curl "https://www.googleapis.com/oauth2/v1/tokeninfo" -d "access_token=' + credentials.CHROME_WEBSTORE_ACCESS_TOKEN + '"'));
+
         if (Math.floor(new Date().getTime() / 1000) > credentials.CHROME_WEBSTORE_REFRESH_TOKEN_MAX_AGE) {
-            var response = JSON.parse(exec('curl "https://www.googleapis.com/oauth2/v4/token" -d "client_id=' + credentials.CHROME_WEBSTORE_CLIENT_ID + '&client_secret=' + credentials.CHROME_WEBSTORE_CLIENT_SECRET + '&refresh_token=' + credentials.CHROME_WEBSTORE_REFRESH_TOKEN + '&redirect_uri=urn:ietf:wg:oauth:2.0:oob&grant_type=refresh_token"'));
+            var response = JSON.parse(exec('curl "https://www.googleapis.com/oauth2/token" -d "client_id=' + credentials.CHROME_WEBSTORE_CLIENT_ID + '&client_secret=' + credentials.CHROME_WEBSTORE_CLIENT_SECRET + '&refresh_token=' + credentials.CHROME_WEBSTORE_REFRESH_TOKEN.trim() + '&grant_type=refresh_token"'));
             if (response.error) {
                 process.exit();
             }

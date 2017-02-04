@@ -58,12 +58,14 @@ module.exports = {
             ].join(" "));
             // publish it
             echo("Publishing chrome webstore draft");
-            echo(['curl',
+
+            exec(['curl',
                 '-H "Authorization: Bearer ' + credentials.CHROME_WEBSTORE_CODE + '"',
                 '-H "x-goog-api-version: 2"',
-                '-H "Content-Length: 0"',
+                '-H "Content-Type: application/json"',
                 '-X POST',
-                '-v https://www.googleapis.com/chromewebstore/v1.1/items/' + APP_ID + '/publish'
+                "-d '{\"target\": \"default\"}'",
+                'https://www.googleapis.com/chromewebstore/v1.1/items/' + APP_ID + '/publish'
             ].join(" "));
 
             return buildUtils.buildFileName(PACKAGE_FILENAME);

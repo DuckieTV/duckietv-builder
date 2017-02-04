@@ -19,9 +19,11 @@ module.exports = {
     processor: {
 
         preProcess: function(options) {
+
             if (options.nightly) {
                 ShellString(dateFormat('yyyy.m.dHM')).to(BUILD_DIR + '/VERSION'); // set nightly version to work without prefix zeros and separated by dots.
             }
+            shared.patchManifest(BUILD_DIR, ['dist/background.js']);
             if (options.nightly) {
                 shared.addNightlyStrings(BUILD_DIR);
             }
@@ -35,25 +37,13 @@ module.exports = {
             buildUtils.zipBinary('newtab', targetFileName);
         },
         publish: function(options) {
-            var credentials = shared.getCredentials();
-            var APP_ID = options.nightly ? credentials.EXTENSION_ID_NEWTAB_NIGHTLY : credentials.EXTENSION_ID_NEWTAB;
             if (!options.nightly && !options.iamverysure) {
                 echo("Not publishing production version! --iamverysure missing from command");
             }
 
-            // grab fresh auth token only when needed
-            if (Math.floor(new Date().getTime() / 1000) > credentials.CHROME_WEBSTORE_REFRESH_TOKEN_MAX_AGE) {
-                var response = JSON.parse(exec('curl "https://www.googleapis.com/oauth2/v4/token" -d "client_id=' + credentials.CHROME_WEBSTORE_CLIENT_ID + '&client_secret=' + credentials.CHROME_WEBSTORE_CLIENT_SECRET + '&code=' + credentials.CHROME_WEBSTORE_REFRESH_TOKEN + '&grant_type=authorization_code&redirect_uri=urn:ietf:wg:oauth:2.0:oob"').trim());
-                if (response.error) {
-                    process.exit();
-                }
-                credentials.CHROME_WEBSTORE_REFRESH_TOKEN = response.refresh_token;
-                credentials.CHROME_WEBSTORE_CODE = response.access_token;
-                credentials.CHROME_WEBSTORE_REFRESH_TOKEN_MAX_AGE = Math.floor(new Date().getTime() / 1000) + response.expires_in;
-                shared.putCredentials(credentials);
-                echo("Updated credentials:");
-                echo(response);
-            }
+            require('../oauth').refreshTokenIfNeeded();
+            var credentials = shared.getCredentials();
+            var APP_ID = options.nightly ? credentials.EXTENSION_ID_NEWTAB_NIGHTLY : credentials.EXTENSION_ID_NEWTAB;
 
             // upload zip
             echo("Uploading to chrome webstore");

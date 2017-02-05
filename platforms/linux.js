@@ -20,7 +20,7 @@ module.exports = {
             shared.modifyPackageJSON(options, BUILD_DIR);
             shared.patchManifest(BUILD_DIR, ['dist/background.js']);
             if (options.nightly) {
-                shared.addNightlyStrings();
+                shared.addNightlyStrings(BUILD_DIR);
             }
         },
         makeBinary: function(options) {
@@ -46,6 +46,7 @@ module.exports = {
                 cp('-r', EXTRACTED_NWJS + "/*", ARCH_BUILD_DIR);
                 //rename nw executable to DuckieTV-bin, so the wrapper script can run
                 mv(ARCH_BUILD_DIR + "/nw", ARCH_BUILD_DIR + "/DuckieTV-bin");
+                echo(BUILD_DIR + "-" + arch);
 
                 pushd(BUILD_DIR + "-" + arch);
 
@@ -74,7 +75,7 @@ module.exports = {
         publish: function(options) {
 
             return ARCHITECTURES.map(function(arch) {
-                return buildUtils.buildFilename(PACKAGE_FILENAME);
+                return buildUtils.buildFileName(PACKAGE_FILENAME, arch);
             });
 
         }

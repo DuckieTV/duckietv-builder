@@ -31,12 +31,11 @@ module.exports = {
             renameTab();
             patchAppJS();
             patchDepsJS();
-            renameLocalesDir();
             shared.patchManifest(BUILD_DIR, ['dist/background.js', 'dist/launch.js']);
             if (options.nightly) {
                 shared.addNightlyStrings(BUILD_DIR);
             }
-
+            renameLocalesDir();
         },
 
         /**
@@ -62,15 +61,7 @@ module.exports = {
             popd();
         },
         publish: function(options) {
-
-            if (options.deployDemo) {
-
-            }
-
-            return ARCHITECTURES.map(function(arch) {
-                return buildUtils.buildFilename(PACKAGE_FILENAME);
-            });
-
+            return [buildUtils.buildFileName(PACKAGE_FILENAME)];
         }
     }
 

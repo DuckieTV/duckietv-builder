@@ -43,20 +43,31 @@ var files = [];
 program.platform.map(function(platform) {
     echo("Running publish processor for " + platform);
     var processor = require('./platforms/' + platform).processor;
-    //    files += processor.publish(program);
-
-    if (program.nightly) {
-        var tag = 'nightly-' + sharedConfig.getVersion();
-        github.createNightlyTag(sharedConfig.BUILD_SOURCE_DIR, tag);
-        var lastHash = github.determineLastTagHash(program.nightly);
-        var changelog = github.getChangeLogSince(sharedConfig.BUILD_SOURCE_DIR, lastHash);
-        github.createNightlyRelease(tag, changelog).then(function() {
-
-            echo("Nightly release created. now uploading files:");
-            echo(files);
-            echo("Done processing " + platform);
-        })
-    }
+    files = files.concat(processor.publish(program));
 });
 
+echo(JSON.stringify(files));
+
+if (program.nightly) {
+    var tag = 'nightly-' + sharedConfig.getVersion();
+    github.createNightlyTag(sharedConfig.BUILD_SOURCE_DIR, tag);
+    var lastHash = github.determineLastTagHash(program.nightly);
+    var changelog = github.getChangeLogSince(sharedConfig.BUILD_SOURCE_DIR, lastHash);
+    github.createNightlyRelease(tag, changelog).then(function(release_id) {
+        echo(release_id);
+        echo("Nightly release created. now uploading files:");
+        return release_id;
+    }).then(function(release_id) {
+        echo(JSON.stringify(files));
+        return files.map(function(filename) {
+            echo("Uploading:" + sharedConfig.BINARY_OUTPUT_DIR + "/" + filename + "\n");
+            github.publishFileToGithubTag('DuckieTV/Nightlies', release_id, sharedConfig.BINARY_OUTPUT_DIR + "/" + filename);
+            echo("Upload complete:" + sharedConfig.BINARY_OUTPUT_DIR + "/" + filename + "\n");
+            return true;
+        });
+        return true;
+    }).then(function(done) {
+        console.log("all done");
+    });
+}
 echo("Publish processor done");

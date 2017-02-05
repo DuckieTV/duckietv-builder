@@ -23,7 +23,6 @@ module.exports = {
                 shared.addNightlyStrings(BUILD_DIR);
             }
         },
-
         makeBinary: function(options) {
 
             ARCHITECTURES.map(function(arch) {
@@ -82,7 +81,7 @@ module.exports = {
         publish: function(options) {
 
             return ARCHITECTURES.map(function(arch) {
-                return buildUtils.buildFilename(PACKAGE_FILENAME);
+                return buildUtils.buildFileName(PACKAGE_FILENAME, arch);
             });
 
         }

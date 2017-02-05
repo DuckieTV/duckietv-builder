@@ -1,7 +1,8 @@
 require('shelljs/global');
 var dateFormat = require('dateformat'),
     shared = require('../shared'),
-    buildUtils = require('../util');
+    buildUtils = require('../util'),
+    oAuth = require('../oauth');
 
 
 /**
@@ -20,14 +21,16 @@ module.exports = {
 
         preProcess: function(options) {
             if (options.nightly) {
-                ShellString(dateFormat('yyyy.m.dHM')).to(BUILD_DIR + '/VERSION'); // set nightly version to work without prefix zeros and separated by dots.
+                ShellString(dateFormat('yyyy.m.dHHM')).to(BUILD_DIR + '/VERSION'); // set nightly version to work without prefix zeros and separated by dots.
             }
             cp([shared.BUILD_SOURCE_DIR + "/manifest-app.json"], BUILD_DIR + '/manifest.json');
             cp([shared.BUILD_SOURCE_DIR + "/js/background.js", shared.BUILD_SOURCE_DIR + '/launch.js'], BUILD_DIR + '/dist/');
             shared.patchManifest(BUILD_DIR, ['dist/background.js', 'dist/launch.js']);
             if (options.nightly) {
                 shared.addNightlyStrings(BUILD_DIR);
+                shared.rotateNightlyImages(BUILD_DIR);
             }
+
         },
         makeBinary: function(options) {
             cp('-r', BUILD_DIR, shared.BASE_OUTPUT_DIR);
@@ -40,33 +43,20 @@ module.exports = {
 
             if (!options.nightly && !options.iamverysure) {
                 echo("Not publishing production version! --iamverysure missing from command");
+                return;
             }
 
-            require('../oauth').refreshTokenIfNeeded();
+            oAuth.refreshTokenIfNeeded();
             var credentials = shared.getCredentials();
             var APP_ID = options.nightly ? credentials.EXTENSION_ID_BROWSER_ACTION_NIGHTLY : credentials.EXTENSION_ID_BROWSER_ACTION;
 
-
-
             // upload zip
-            echo("Uploading to chrome webstore");
-            exec(['curl',
-                '-H "Authorization: Bearer ' + credentials.CHROME_WEBSTORE_CODE + '"',
-                '-H "x-goog-api-version: 2"',
-                '-X PUT -T ' + shared.BINARY_OUTPUT_DIR + "/" + buildUtils.buildFileName(PACKAGE_FILENAME),
-                '-v https://www.googleapis.com/upload/chromewebstore/v1.1/items/' + APP_ID
-            ].join(" "));
-            // publish it
-            echo("Publishing chrome webstore draft");
+            echo("\nUploading to chrome webstore\n");
+            oAuth.uploadBinary(APP_ID, shared.BINARY_OUTPUT_DIR + "/" + buildUtils.buildFileName(PACKAGE_FILENAME));
 
-            exec(['curl',
-                '-H "Authorization: Bearer ' + credentials.CHROME_WEBSTORE_CODE + '"',
-                '-H "x-goog-api-version: 2"',
-                '-H "Content-Type: application/json"',
-                '-X POST',
-                "-d '{\"target\": \"default\"}'",
-                'https://www.googleapis.com/chromewebstore/v1.1/items/' + APP_ID + '/publish'
-            ].join(" "));
+            // publish it
+            echo("\nPublishing chrome webstore draft\n");
+            oAuth.publishDraft(APP_ID);
 
             return buildUtils.buildFileName(PACKAGE_FILENAME);
 

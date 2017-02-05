@@ -3,7 +3,8 @@
 require('shelljs/global');
 var program = require('commander'),
     shared = require('./shared'),
-    opn = require('opn');
+    opn = require('opn'),
+    oauth = require('./oauth');
 
 config.verbose = false;
 config.fatal = true;
@@ -21,10 +22,8 @@ program
 
 var credentials = shared.getCredentials();
 
-echo("credentials:");
-echo(credentials);
-echo("No code provided. opening browser. Close the browser when you're done and paste the code here");
-opn('https://accounts.google.com/o/oauth2/auth?response_type=code&scope=https://www.googleapis.com/auth/chromewebstore&client_id=' + credentials.CHROME_WEBSTORE_CLIENT_ID + '&redirect_uri=urn:ietf:wg:oauth:2.0:oob&access_type=offline&approval_prompt=force&state=' + new Date().getTime());
+echo("Opening browser. Close the browser when you're done and paste the code here");
+opn(oAuth.getApprovalPromptURL());
 echo("paste the code here:\n");
 process.stdin.setEncoding('utf8');
 process.stdin.once('data', function(code) {

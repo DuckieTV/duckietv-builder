@@ -12,6 +12,7 @@ module.exports = {
     buildTemplateCache: buildTemplateCache,
     processTabHTML: processTabHTML,
     addNightlyStrings: addNightlyStrings,
+    rotateNightlyImages: rotateNightlyImages,
     copyDefaultResources: copyDefaultResources,
     getCredentials: getCredentials,
     putCredentials: putCredentials,
@@ -47,6 +48,15 @@ function addNightlyStrings(SOURCES_DIR) {
         translation.appNameBrowserAction.message += " - Nightly";
         translation.appShortNameBrowserAction.message += " - Nightly";
         ShellString(JSON.stringify(translation, null, "\t")).to(file);
+    });
+    popd();
+}
+
+function rotateNightlyImages(SOURCES_DIR) {
+    echo('Rotating nightly logos for webstore');
+    pushd(SOURCES_DIR + '/img/logo');
+    ['icon16.png', 'icon32.png', 'icon48.png', 'icon128.png', 'icon256.png'].map(function(file) {
+        exec("convert " + file + " -rotate 180 " + file);
     });
     popd();
 }

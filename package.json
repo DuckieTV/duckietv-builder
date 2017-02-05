@@ -25,6 +25,7 @@
     "ng-templatecache": "^0.1.4",
     "opn": "^4.0.2",
     "resourcehacker": "^4.2.51",
+    "shell-escape": "^0.2.0",
     "shelljs": "^0.7.6",
     "sleep": "^5.1.0",
     "superagent": "^3.3.2",

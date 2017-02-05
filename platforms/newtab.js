@@ -1,7 +1,8 @@
 require('shelljs/global');
 var shared = require('../shared'),
     buildUtils = require('../util'),
-    dateFormat = require('dateformat');
+    dateFormat = require('dateformat'),
+    oAuth = require('../oauth');
 
 
 /**

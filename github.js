@@ -1,7 +1,12 @@
 require('shelljs/global');
+var shared = require('./shared.js'),
+    dateFormat = require('dateformat');
 
 var ZIP_URL = 'https://github.com/SchizoDuckie/DuckieTV/archive/angular.zip';
-module.exports = {
+var PRODUCTION_REPO = 'SchizoDuckie/DuckieTV';
+var NIGHTLY_REPO = 'DuckieTV/Nightlies';
+
+var exports = {
 
     downloadFromZip: function() {
         echo("Downloading: " + ZIP_URL);
@@ -11,7 +16,10 @@ module.exports = {
         mv("DuckieTV-angular/*", ".");
         rm("-rf", "DuckieTV-angular");
         rm("angular.zip");
+    },
 
+    downloadRepo: function() {
+        exec("git clone git@github.com:SchizoDuckie/DuckieTV .");
     },
 
     /**
@@ -30,6 +38,72 @@ module.exports = {
         echo("Publishing " + filename + " to github tag " + github_release_id + " on remote" + remote);
         exec(command);
 
+    },
+    createNightlyTag: function(SOURCES_DIR, tag) {
+        pushd(SOURCES_DIR);
+        try {
+            exec("git remote add nightly git@github.com:DuckieTV/Nightlies.git");
+        } catch (e) {}
+        exec("git add .");
+        try {
+            exec('git commit -m "Auto-Build: ' + tag + '"');
+        } catch (e) {}
+        try {
+            exec('git tag -am "' + tag + '" "' + tag + '"');
+        } catch (e) {}
+        exec("git push nightly angular:master -f --tags");
+        popd();
+    },
+    /**
+     * Determine the parent commit hash for the last created tag
+     */
+    determineLastTagHash: function(nightly) {
+        var repository = nightly ? NIGHTLY_REPO : PRODUCTION_REPO;
+        var releases = JSON.parse(exec("curl https://api.github.com/repos/" + repository + "/releases?access_token=" + shared.getCredentials().GITHUB_API_KEY));
+        var tagname = releases[1].tag_name;
+        var taginfo = JSON.parse(exec("curl https://api.github.com/repos/" + repository + "/commits/tags/" + tagname + "?access_token=" + shared.getCredentials().GITHUB_API_KEY));
+        return taginfo.parents[0].sha;
+    },
+    /**
+     * Fetch a shortened commit log between the previous release and the current master
+     */
+    getChangeLogSince: function(SOURCES_DIR, hash) {
+        pushd(SOURCES_DIR);
+        var changelog = exec("git log " + hash + '..HEAD --oneline|awk 1 ORS=\'\n - \'')
+        popd();
+        return changelog;
+    },
+    /**
+     * create a new release on the nightly repo with the changelog
+     */
+    createNightlyRelease: function(tag, changelog) {
+        var repository = NIGHTLY_REPO;
+        var credentials = shared.getCredentials();
+
+        var body = {
+            "tag_name": tag,
+            "target_commitish": "master",
+            "name": "Nightly release for " + dateFormat("d-m-Y"),
+            "body": "DuckieTV nightly release for " + dateFormat(new Date()) + ".\n**Changelog:**\n - " + changelog,
+            "draft": false,
+            "prerelease": true
+        };
+
+
+        var request = require('superagent');
+
+        return request
+            .post('https://api.github.com/repos/' + repository + '/releases')
+            .query({
+                'access_token': credentials.GITHUB_API_KEY
+            })
+            .send(body)
+            .then(function(result) {
+
+                echo("Release created \n");
+                echo(result);
+                return result;
+            });
     },
 
     createGithubRelease: function(since) {
@@ -66,3 +140,5 @@ module.exports = {
 
 
 }
+
+module.exports = exports;

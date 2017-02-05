@@ -2,7 +2,8 @@
 
 require('shelljs/global');
 var program = require('commander'),
-    sharedConfig = require('./shared');
+    sharedConfig = require('./shared'),
+    github = require('./github');
 
 config.verbose = false;
 config.fatal = true;
@@ -42,8 +43,20 @@ var files = [];
 program.platform.map(function(platform) {
     echo("Running publish processor for " + platform);
     var processor = require('./platforms/' + platform).processor;
-    files += processor.publish(program);
-    echo("Done processing " + platform);
+    //    files += processor.publish(program);
+
+    if (program.nightly) {
+        var tag = 'nightly-' + sharedConfig.getVersion();
+        github.createNightlyTag(sharedConfig.BUILD_SOURCE_DIR, tag);
+        var lastHash = github.determineLastTagHash(program.nightly);
+        var changelog = github.getChangeLogSince(sharedConfig.BUILD_SOURCE_DIR, lastHash);
+        github.createNightlyRelease(tag, changelog).then(function() {
+
+            echo("Nightly release created. now uploading files:");
+            echo(files);
+            echo("Done processing " + platform);
+        })
+    }
 });
 
 echo("Publish processor done");

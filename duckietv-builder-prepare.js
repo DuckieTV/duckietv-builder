@@ -52,7 +52,7 @@ mkdir('-p', defaultDirs); // init intial structure
  * Make sure we have a copy of DuckieTV to work from
  */
 cd(sharedConfig.BUILD_SOURCE_DIR); // move into build source dir
-github.downloadFromZip(); // todo: add --tag parameter that'll checkout a previous tag. now grabs trunk of :angular
+github.downloadRepo(); // todo: add --tag parameter that'll checkout a previous tag. now grabs trunk of :angular
 
 /**
  * Determine version based on nightly switch, save it to program global and to shared VERSION file.

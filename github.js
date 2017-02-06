@@ -68,19 +68,38 @@ var exports = {
      */
     determineLastTagHash: function(nightly) {
         var repository = nightly ? NIGHTLY_REPO : PRODUCTION_REPO;
-        var releases = JSON.parse(exec("curl https://api.github.com/repos/" + repository + "/releases?access_token=" + credentials.GITHUB_API_KEY));
-        var tagname = releases[0].tag_name;
-        var taginfo = JSON.parse(exec("curl https://api.github.com/repos/" + repository + "/commits/tags/" + tagname + "?access_token=" + credentials.GITHUB_API_KEY));
-        return taginfo.parents[0].sha;
+        return request
+            .get('https://api.github.com/repos/' + repository + '/releases')
+            .query({
+                'access_token': credentials.GITHUB_API_KEY
+            })
+            .then(function(response) {
+                return response.body[0].tag_name;
+            })
+            .then(function(tag_name) {
+                echo("Tag name: " + tag_name);
+                return request
+                    .get('https://api.github.com/repos/' + repository + '/commits/' + tag_name)
+                    .query({
+                        'access_token': credentials.GITHUB_API_KEY
+                    })
+                    .then(function(response) {
+                        return response.body.parents[0].sha
+                    }, function(error) {
+                        echo(error);
+                    });
+            });
     },
+
+
     /**
      * Fetch a shortened commit log between the previous release and the current master
      */
     getChangeLogSince: function(SOURCES_DIR, hash) {
         pushd(SOURCES_DIR);
-        var changelog = exec("git log " + hash + '..HEAD --oneline|awk 1 ORS=\'\n - \'')
+        var changelog = exec("git log " + hash + '..HEAD --oneline');
         popd();
-        return changelog;
+        return changelog.trim().split("\n").join('\n - ');
     },
     /**
      * create a new release on the nightly repo with the changelog

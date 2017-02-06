@@ -69,7 +69,7 @@ var exports = {
     determineLastTagHash: function(nightly) {
         var repository = nightly ? NIGHTLY_REPO : PRODUCTION_REPO;
         var releases = JSON.parse(exec("curl https://api.github.com/repos/" + repository + "/releases?access_token=" + credentials.GITHUB_API_KEY));
-        var tagname = releases[1].tag_name;
+        var tagname = releases[0].tag_name;
         var taginfo = JSON.parse(exec("curl https://api.github.com/repos/" + repository + "/commits/tags/" + tagname + "?access_token=" + credentials.GITHUB_API_KEY));
         return taginfo.parents[0].sha;
     },

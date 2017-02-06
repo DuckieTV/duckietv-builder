@@ -105,7 +105,7 @@ module.exports = {
 
             var targetFileName = buildUtils.buildFileName(PACKAGE_FILENAME, ARCHITECTURE);
             echo("Packaging: " + targetFileName);
-            var WORK_DIR = BINARY_OUTPUT_DIR + '/../osx-installer';
+            var WORK_DIR = shared.BUILD_DIR + '/osx-installer';
             var APP_BUILD_DIR = WORK_DIR + '/root/Applications';
             var RESOURCE_DIR = __dirname + "/osx/build";
 

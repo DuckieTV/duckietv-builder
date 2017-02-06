@@ -1,6 +1,6 @@
 {
     "name": "duckietv-builder",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "A new way to build duckietv",
     "main": "duckietv-builder",
     "repository": "https://github.com/DuckieTV/duckietv-builder.git",
@@ -16,6 +16,9 @@
         "duckietv-builder": "./duckietv-builder"
     },
     "license": "ISC",
+    "engines": {
+        "node": ">=0.5.0"
+    },
     "dependencies": {
         "app": "^0.1.0",
         "chrome-webstore-upload": "^0.2.1",

@@ -113,8 +113,8 @@ module.exports = {
             mkdir('-p', WORK_DIR);
 
             cp('-r', RESOURCE_DIR + '/*', WORK_DIR); // initialize base directory structure
-            cp('-r', BINARY_OUTPUT_DIR, APP_BUILD_DIR); // copy source files to installer base
-
+            cp('-r', BINARY_OUTPUT_DIR + '/*', APP_BUILD_DIR); // copy source files to installer base
+            mkdir('-p', BINARY_OUTPUT_DIR);
             cd(APP_BUILD_DIR);
 
             // count files and install size and insert them in the install script

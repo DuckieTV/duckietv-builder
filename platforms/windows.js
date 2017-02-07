@@ -28,6 +28,10 @@ module.exports = {
 
         makeBinary: function(options) {
 
+            if (!which('makensis')) {
+                echo("makensis is required to build windows installers. Grab it from http://nsis.sourceforge.net/");
+                process.exit();
+            }
 
             ARCHITECTURES.map(function(arch) {
                 var ARCH_BUILD_DIR = BUILD_DIR + "-" + arch + "/DuckieTV";
@@ -66,10 +70,13 @@ module.exports = {
                 var path = require('path');
                 pushd('DuckieTV');
                 var RESHACKER_PATH = path.join(path.dirname(require.resolve('resourcehacker')), '../bin/ResourceHacker.exe');
-                exec("wine " + RESHACKER_PATH + ' -addoverwrite "DuckieTV.exe","DuckieTV.exe","img/favicon-inverted.ico",ICONGROUP,IDR_ALT_ICON,0');
-                exec("wine " + RESHACKER_PATH + ' -addoverwrite "DuckieTV.exe","DuckieTV.exe","img/favicon.ico",ICONGROUP,IDR_MAINFRAME,1033');
-                exec("wine " + RESHACKER_PATH + ' -addoverwrite "DuckieTV.exe","DuckieTV.exe","img/favicon.ico",ICONGROUP,IDR_X001_APP_LIST,1033');
-                exec("wine " + RESHACKER_PATH + ' -addoverwrite "DuckieTV.exe", "DuckieTV.exe", "' + __dirname + '/windows/fileinfo.res", VERSIONINFO, 1, 1033');
+                if (process.platform != 'win32') {
+                    RESHACKER_PATH = 'wine ' + RESHACKER_PATH;
+                }
+                exec(RESHACKER_PATH + ' -addoverwrite "DuckieTV.exe","DuckieTV.exe","img/favicon-inverted.ico",ICONGROUP,IDR_ALT_ICON,0');
+                exec(RESHACKER_PATH + ' -addoverwrite "DuckieTV.exe","DuckieTV.exe","img/favicon.ico",ICONGROUP,IDR_MAINFRAME,1033');
+                exec(RESHACKER_PATH + ' -addoverwrite "DuckieTV.exe","DuckieTV.exe","img/favicon.ico",ICONGROUP,IDR_X001_APP_LIST,1033');
+                exec(RESHACKER_PATH + ' -addoverwrite "DuckieTV.exe", "DuckieTV.exe", "' + __dirname + '/windows/fileinfo.res", VERSIONINFO, 1, 1033');
                 exec("makensis app.nsi");
                 mv(buildUtils.buildFileName(INSTALLER_FILENAME, arch), '..');
                 popd();

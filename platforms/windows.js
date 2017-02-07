@@ -12,7 +12,7 @@ config.verbose = true;
 var BUILD_DIR = shared.BUILD_DIR + '/windows';
 var PACKAGE_FILENAME = 'DuckieTV-%VERSION%-windows-%ARCHITECTURE%.zip';
 var INSTALLER_FILENAME = 'DuckieTV-%VERSION%-windows-%ARCHITECTURE%.exe';
-var ARCHITECTURES = ['ia32', 'x64'];
+var ARCHITECTURES = ['x32', 'x64'];
 
 module.exports = {
 

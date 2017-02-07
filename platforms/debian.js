@@ -10,7 +10,7 @@ var shared = require('../shared'),
 
 var BUILD_DIR = shared.BUILD_DIR + '/debian';
 var PACKAGE_FILENAME = 'DuckieTV-%VERSION%-ubuntu-%ARCHITECTURE%.deb';
-var ARCHITECTURES = ['ia32', 'x64'];
+var ARCHITECTURES = ['x32', 'x64'];
 
 module.exports = {
 

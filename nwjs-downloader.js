@@ -60,7 +60,7 @@ var public = {
     },
 
     setArchitecture: function(architecture) {
-        ARCHITECTURE = architecture;
+        ARCHITECTURE = architecture == 'x32' ? 'ia32' : architecture;
         return public;
     },
 

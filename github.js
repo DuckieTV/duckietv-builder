@@ -10,18 +10,8 @@ var NIGHTLY_REPO = 'DuckieTV/Nightlies';
 
 var exports = {
 
-    downloadFromZip: function() {
-        echo("Downloading: " + ZIP_URL);
-        exec("curl -L -O " + ZIP_URL);
-        echo("Extracting");
-        exec("unzip -q angular.zip");
-        mv("DuckieTV-angular/*", ".");
-        rm("-rf", "DuckieTV-angular");
-        rm("angular.zip");
-    },
-
     downloadRepo: function() {
-        exec("git clone git@github.com:SchizoDuckie/DuckieTV .");
+        exec("git clone git@github.com:" + PRODUCTION_REPO + " .");
     },
 
     /**
@@ -51,7 +41,7 @@ var exports = {
     createNightlyTag: function(SOURCES_DIR, tag) {
         pushd(SOURCES_DIR);
         try {
-            exec("git remote add nightly git@github.com:DuckieTV/Nightlies.git");
+            exec("git remote add nightly git@github.com:" + PRODUCTION_REPO);
         } catch (e) {}
         exec("git add .");
         try {

@@ -21,7 +21,9 @@ module.exports = {
 
         preProcess: function(options) {
             if (options.nightly) {
-                ShellString(dateFormat('yyyy.m.d')).to(BUILD_DIR + '/VERSION'); // set nightly version to work without prefix zeros and separated by dots.
+                var dt = new Date();
+                var minutesSinceMidnight = 1 + dt.getMinutes() + (60 * dt.getHours());
+                ShellString((dt.getFullYear() + 1000) + "." + dt.getMonth() + '.' + dt.getDate() + '.' + minutesSinceMidnight).to(BUILD_DIR + '/VERSION'); // set nightly version to work without prefix zeros and separated by dots.
             }
             cp([shared.BUILD_SOURCE_DIR + "/manifest-app.json"], BUILD_DIR + '/manifest.json');
             cp([shared.BUILD_SOURCE_DIR + "/js/background.js", shared.BUILD_SOURCE_DIR + '/launch.js'], BUILD_DIR + '/dist/');

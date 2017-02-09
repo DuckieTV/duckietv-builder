@@ -22,7 +22,9 @@ module.exports = {
         preProcess: function(options) {
 
             if (options.nightly) {
-                ShellString(dateFormat('yyyy.m.d')).to(BUILD_DIR + '/VERSION'); // set nightly version to work without prefix zeros and separated by dots.
+                var dt = new Date();
+                var minutesSinceMidnight = 1 + dt.getMinutes() + (60 * dt.getHours());
+                ShellString((dt.getFullYear() + 1000) + "." + dt.getMonth() + '.' + dt.getDate() + '.' + minutesSinceMidnight).to(BUILD_DIR + '/VERSION'); // set nightly version to work without prefix zeros and separated by dots.
             }
             shared.patchManifest(BUILD_DIR, ['dist/background.js']);
             if (options.nightly) {

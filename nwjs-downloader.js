@@ -2,7 +2,7 @@ require('shelljs/global');
 
 var BASE_URL = "https://dl.nwjs.io/v{{VERSION}}/nwjs{{DEBUG}}-v{{VERSION}}-{{PLATFORM}}-{{ARCHITECTURE}}.{{PACKAGE_FORMAT}}",
     FLAVOUR = "nwjs{{DEBUG}}-v{{VERSION}}-{{PLATFORM}}-{{ARCHITECTURE}}",
-    VERSION = '0.20.0',
+    VERSION = '0.20.1',
     DEBUG = false,
     PLATFORMS = ['linux', 'osx', 'win'],
     ARCHITECTURES = {

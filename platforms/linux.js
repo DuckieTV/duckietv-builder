@@ -40,6 +40,7 @@ module.exports = {
                 var EXTRACTED_NWJS = require('../nwjs-downloader')
                     .setDebug(options.nightly)
                     .setPlatform('linux')
+                    .setVersion(shared.NWJS_VERSION)
                     .setArchitecture(arch)
                     .get();
 

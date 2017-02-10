@@ -41,7 +41,8 @@ module.exports = {
                     .setDebug(options.nightly)
                     .setPlatform('linux')
                     .setArchitecture(arch)
-                    .get();
+                    .setVersion(shared.NWJS_VERSION);
+                .get();
 
                 cp('-r', EXTRACTED_NWJS + "/*", ARCH_BUILD_DIR);
                 //rename nw executable to DuckieTV-bin, so the wrapper script can run

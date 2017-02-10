@@ -12,35 +12,6 @@ var BINARY_OUTPUT_DIR = shared.BUILD_DIR + '/DuckieTV.app';
 var PACKAGE_FILENAME = 'DuckieTV-%VERSION%-OSX-%ARCHITECTURE%.pkg';
 var ARCHITECTURE = 'x64';
 
-/**
- * Check and make sure that nwjs is cached and extracted
- for use
- */
-function downloadAndExtractNWJS(debug) {
-
-    if (!test('-d', shared.NWJS_DOWNLOAD_DIR)) {
-        mkdir(shared.NWJS_DOWNLOAD_DIR);
-    }
-    pushd(shared.NWJS_DOWNLOAD_DIR);
-
-    var flavour = "nwjs" + (debug ? '-sdk' : '') + '-v' + shared.NWJS_VERSION + "-osx-x64",
-        url = "https://dl.nwjs.io/v" + shared.NWJS_VERSION + "/" + flavour + ".zip",
-        downloaded = test('-f', flavour + '.zip'),
-        extracted = test('-d', flavour);
-
-
-    if (!downloaded) {
-        echo(flavour + " not yet found. Downloading from " + url);
-        exec("curl -O " + url);
-    }
-
-    if (!extracted) {
-        echo(flavour + " is not yet extracted.. extracting.");
-        exec("unzip " + flavour + ".zip");
-    }
-    popd();
-    return shared.NWJS_DOWNLOAD_DIR + "/" + flavour + "/nwjs.app";
-}
 
 module.exports = {
 
@@ -56,17 +27,24 @@ module.exports = {
 
         makeBinary: function(options) {
 
-            // download nwjs if not cached
-            var nwjspath = downloadAndExtractNWJS(options.nightly);
             // default dir to copy the previously built duckietv sources to
             var NWJS_APP_DIR = BINARY_OUTPUT_DIR + '/Contents/Resources/app.nw';
+
+            // download nwjs if not cached
+
+            var EXTRACTED_NWJS = require('../nwjs-downloader')
+                .setDebug(options.nightly)
+                .setPlatform('osx')
+                .setVersion(shared.NWJS_VERSION)
+                .setArchitecture(ARCHITECTURE)
+                .get() + '/nwjs.app';
 
             // cleanup
             rm('-rf', BINARY_OUTPUT_DIR);
             // re-init
             mkdir('-p', BINARY_OUTPUT_DIR);
             // copy default nwjs installation
-            cp('-r', nwjspath + '/*', BINARY_OUTPUT_DIR);
+            cp('-r', EXTRACTED_NWJS + '/*', BINARY_OUTPUT_DIR);
             // create folder app.nw in nwjs.app/Contents/Resources/
             mv(BINARY_OUTPUT_DIR + '/Contents/MacOS/nwjs', BINARY_OUTPUT_DIR + '/Contents/MacOS/DuckieTV')
             mkdir('-p', NWJS_APP_DIR);

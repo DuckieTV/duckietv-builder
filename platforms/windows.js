@@ -49,6 +49,7 @@ module.exports = {
                     .setDebug(options.nightly)
                     .setPlatform('win')
                     .setArchitecture(arch)
+                    .setVersion(shared.NWJS_VERSION)
                     .get();
 
                 cp('-r', EXTRACTED_NWJS + "/*", ARCH_BUILD_DIR);

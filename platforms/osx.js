@@ -84,11 +84,12 @@ module.exports = {
             var targetFileName = buildUtils.buildFileName(PACKAGE_FILENAME, ARCHITECTURE);
             echo("Packaging: " + targetFileName);
             var WORK_DIR = shared.BUILD_DIR + '/osx-installer';
-            var APP_BUILD_DIR = WORK_DIR + '/root/Applications';
+            var APP_BUILD_DIR = WORK_DIR + '/root/Applications/DuckieTV.app/';
             var RESOURCE_DIR = __dirname + "/osx/build";
 
             rm('-rf', WORK_DIR); // init work dir
             mkdir('-p', WORK_DIR);
+            mkdir('-p', APP_BUILD_DIR);
 
             cp('-r', RESOURCE_DIR + '/*', WORK_DIR); // initialize base directory structure
             cp('-r', BINARY_OUTPUT_DIR + '/*', APP_BUILD_DIR); // copy source files to installer base
@@ -116,7 +117,7 @@ module.exports = {
                 .to(WORK_DIR + "/flat/base.pkg/PackageInfo");
 
             // fix permissions
-            exec('chmod -R a+xr ' + WORK_DIR + '/*');
+            exec('chmod -R 775 ' + WORK_DIR + '/*');
 
             // package payload
 

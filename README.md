@@ -29,7 +29,8 @@ Todo:
 Usage:
 ------
 * `npm install -g`
-* copy `dtv-builder-credentials.json-template` to `~/.dtv-builder-credentials.json` and fill it with provided credentials
-* `duckietv-builder prepare --nightly --platform cordova,linux,osx,windows,browseraction,newtab` # prepare sources for build
-* `duckietv-builder make-binaries --nightly --platform cordova,windows` # create binaries (where needed)
-* `duckietv-builder package-binaries --nightly --platform cordova,windows` #package built binaries to /output
+* copy `duckietv-builder.json-template` to `~/.duckietv-builder.json` and fill it with provided credentials
+* `duckietv-builder prepare --nightly --platform android,debian,linux,osx,windows,browseraction,newtab` # prepare sources for build
+* `duckietv-builder make-binaries --nightly --platform android,debian,linux,osx,windows` # create binaries (where needed)
+* `duckietv-builder package-binaries --nightly --platform android,debian,linux,osx,windows` #package built binaries to /binaries
+* `duckietv-builder publish --nightly --platform android,debian,linux,osx,windows,browseraction,newtab` #publish packages to the relevant GitHub repositories

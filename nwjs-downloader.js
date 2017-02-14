@@ -1,8 +1,8 @@
 require('shelljs/global');
 
-var BASE_URL = "https://dl.nwjs.io/v{{VERSION}}/nwjs{{DEBUG}}-v{{VERSION}}-{{PLATFORM}}-{{ARCHITECTURE}}.{{PACKAGE_FORMAT}}",
-    FLAVOUR = "nwjs{{DEBUG}}-v{{VERSION}}-{{PLATFORM}}-{{ARCHITECTURE}}",
-    VERSION = '0.20.1',
+var BASE_URL = "https://dl.nwjs.io/v{{NWJS_VERSION}}/nwjs{{DEBUG}}-v{{NWJS_VERSION}}-{{PLATFORM}}-{{ARCHITECTURE}}.{{PACKAGE_FORMAT}}",
+    FLAVOUR = "nwjs{{DEBUG}}-v{{NWJS_VERSION}}-{{PLATFORM}}-{{ARCHITECTURE}}",
+    NWJS_VERSION = '0.20.1',
     DEBUG = false,
     PLATFORMS = ['linux', 'osx', 'win'],
     ARCHITECTURES = {
@@ -20,7 +20,7 @@ var BASE_URL = "https://dl.nwjs.io/v{{VERSION}}/nwjs{{DEBUG}}-v{{VERSION}}-{{PLA
 
 function buildUrl() {
     return BASE_URL
-        .replace(/{{VERSION}}/g, VERSION)
+        .replace(/{{NWJS_VERSION}}/g, NWJS_VERSION)
         .replace(/{{DEBUG}}/g, DEBUG ? "-sdk" : "")
         .replace(/{{PLATFORM}}/g, PLATFORM)
         .replace(/{{ARCHITECTURE}}/g, ARCHITECTURE)
@@ -29,7 +29,7 @@ function buildUrl() {
 
 function getFlavour() {
     return FLAVOUR
-        .replace(/{{VERSION}}/g, VERSION)
+        .replace(/{{NWJS_VERSION}}/g, NWJS_VERSION)
         .replace(/{{DEBUG}}/g, DEBUG ? "-sdk" : "")
         .replace(/{{PLATFORM}}/g, PLATFORM)
         .replace(/{{ARCHITECTURE}}/g, ARCHITECTURE);

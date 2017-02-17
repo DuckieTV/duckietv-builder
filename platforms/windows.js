@@ -74,10 +74,10 @@ module.exports = {
                 if (process.platform != 'win32') {
                     RESHACKER_PATH = 'wine ' + RESHACKER_PATH;
                 }
-                exec(RESHACKER_PATH + ' -addoverwrite "DuckieTV.exe","DuckieTV.exe","img/favicon-inverted.ico",ICONGROUP,IDR_ALT_ICON,0');
-                exec(RESHACKER_PATH + ' -addoverwrite "DuckieTV.exe","DuckieTV.exe","img/favicon.ico",ICONGROUP,IDR_MAINFRAME,1033');
-                exec(RESHACKER_PATH + ' -addoverwrite "DuckieTV.exe","DuckieTV.exe","img/favicon.ico",ICONGROUP,IDR_X001_APP_LIST,1033');
-                exec(RESHACKER_PATH + ' -addoverwrite "DuckieTV.exe", "DuckieTV.exe", "' + __dirname + '/windows/fileinfo.res", VERSIONINFO, 1, 1033');
+                exec(RESHACKER_PATH + ' -open "' + ARCH_BUILD_DIR + '/DuckieTV.exe" -save "' + ARCH_BUILD_DIR + '/DuckieTV.exe" -action addoverwrite -resource "' + ARCH_BUILD_DIR + '/img/favicon-inverted.ico" -mask ICONGROUP, IDR_ALT_ICON, 0 -log "' + BUILD_DIR + '/RHlog1.txt"');
+                exec(RESHACKER_PATH + ' -open "' + ARCH_BUILD_DIR + '/DuckieTV.exe" -save "' + ARCH_BUILD_DIR + '/DuckieTV.exe" -action addoverwrite -resource "' + ARCH_BUILD_DIR + '/img/favicon.ico" -mask ICONGROUP, IDR_MAINFRAME, 1033 -log "' + BUILD_DIR + '/RHlog2.txt"');
+                exec(RESHACKER_PATH + ' -open "' + ARCH_BUILD_DIR + '/DuckieTV.exe" -save "' + ARCH_BUILD_DIR + '/DuckieTV.exe" -action addoverwrite -resource "' + ARCH_BUILD_DIR + '/img/favicon.ico" -mask ICONGROUP, IDR_X001_APP_LIST, 1033 -log "' + BUILD_DIR + '/RHlog3.txt"');
+                exec(RESHACKER_PATH + ' -open "' + ARCH_BUILD_DIR + '/DuckieTV.exe" -save "' + ARCH_BUILD_DIR + '/DuckieTV.exe" -action addoverwrite -resource "' + __dirname + '/windows/fileinfo.res" -mask VERSIONINFO, 1, 1033 -log "' + BUILD_DIR + '/RHlog4.txt"');
                 exec("makensis app.nsi");
                 mv(buildUtils.buildFileName(INSTALLER_FILENAME, arch), '..');
                 popd();

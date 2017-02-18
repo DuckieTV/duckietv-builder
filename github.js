@@ -118,7 +118,7 @@ var exports = {
             .send({
                 "tag_name": tag,
                 "target_commitish": "master",
-                "name": "Nightly release for " + dateFormat("dd-mm-yyyy HH:mm:ss"),
+                "name": "Nightly release for " + dateFormat("dd-mm-yyyy HH:MM:ss"),
                 "body": "DuckieTV nightly release for " + dateFormat(new Date()) + ".\n**Changelog:**\n - " + changelog,
                 "draft": false,
                 "prerelease": true

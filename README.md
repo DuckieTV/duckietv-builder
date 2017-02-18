@@ -22,7 +22,7 @@ Todo:
 - [x] installers
 - [x] upload to github for nightly releases
 - [x] install on buildbot
-- [ ] convert XEM fetcher
+- [x] convert XEM fetcher
 - [ ] create workflow for publishing non-nightlies
 - [ ] confirmation 'areyouversure' when publishing non-nightlies to production
 

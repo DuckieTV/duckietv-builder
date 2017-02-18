@@ -1,14 +1,17 @@
 require('shelljs/global');
 
-var BUILD_DIR = process.cwd() + '/TMP';
-var BUILD_SOURCE_DIR = BUILD_DIR + '/DuckieTV';
-var CHANGELOG_DIFF_DIR = BUILD_DIR + '/DuckieTV-angular';
-var BASE_OUTPUT_DIR = BUILD_DIR + '/build';
-var BINARY_OUTPUT_DIR = process.cwd() + "/binaries";
-var NWJS_DOWNLOAD_DIR = require('os').homedir() + "/nwjs_download_cache";
+var BUILD_DIR = process.cwd() + '/TMP',
+    BUILD_SOURCE_DIR = BUILD_DIR + '/DuckieTV',
+    CHANGELOG_DIFF_DIR = BUILD_DIR + '/DuckieTV-angular',
+    BASE_OUTPUT_DIR = BUILD_DIR + '/build',
+    BINARY_OUTPUT_DIR = process.cwd() + "/binaries",
+    NWJS_DOWNLOAD_DIR = require('os').homedir() + "/nwjs_download_cache",
+    XEM_CACHE_DIR = BUILD_DIR + "/xem-cache",
+    NWJS_VERSION = '0.20.2';
 
 module.exports = {
     platforms: ['windows', 'osx', 'linux', 'debian', 'browseraction', 'newtab', 'android'],
+    NWJS_VERSION: NWJS_VERSION,
     modifyPackageJSON: modifyPackageJSON,
     buildTemplateCache: buildTemplateCache,
     processTabHTML: processTabHTML,
@@ -23,9 +26,9 @@ module.exports = {
     BUILD_SOURCE_DIR: BUILD_SOURCE_DIR,
     BASE_OUTPUT_DIR: BASE_OUTPUT_DIR,
     BINARY_OUTPUT_DIR: BINARY_OUTPUT_DIR,
-    NWJS_VERSION: '0.20.2',
     NWJS_DOWNLOAD_DIR: NWJS_DOWNLOAD_DIR,
-    CHANGELOG_DIFF_DIR: CHANGELOG_DIFF_DIR
+    CHANGELOG_DIFF_DIR: CHANGELOG_DIFF_DIR,
+    XEM_CACHE_DIR: XEM_CACHE_DIR
 };
 
 /**

@@ -1,8 +1,6 @@
 require('shelljs/global');
 var shared = require('../shared'),
-    buildUtils = require('../util'),
-    yesno = require('yesno');
-
+    buildUtils = require('../util');
 /**
  * DuckieTV osx build processor.
  * The osx build processor makes a generic x64 

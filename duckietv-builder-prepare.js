@@ -57,7 +57,7 @@ github.downloadRepo(); // todo: add --tag parameter that'll checkout a previous 
 /**
  * Determine version based on nightly switch, save it to program global and to shared VERSION file.
  */
-program.version = !program.nightly ? cat('VERSION') : dateFormat('yyyymmdd');
+program.version = !program.nightly ? cat('VERSION') : dateFormat('yyyymmddhhmm');
 ShellString(program.version).to(sharedConfig.BASE_OUTPUT_DIR + "/VERSION");
 echo("Determined version: " + program.version);
 /**

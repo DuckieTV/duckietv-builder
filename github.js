@@ -12,6 +12,9 @@ var exports = {
 
     downloadRepo: function() {
         exec("git clone git@github.com:" + PRODUCTION_REPO + " .");
+        mkdir('-p', shared.CHANGELOG_DIFF_DIR);
+        cp('-r', ['*', '.*'], shared.CHANGELOG_DIFF_DIR);
+
     },
 
     /**
@@ -41,16 +44,18 @@ var exports = {
     createNightlyTag: function(SOURCES_DIR, tag) {
         pushd(SOURCES_DIR);
         try {
-            exec("git remote add nightly git@github.com:" + PRODUCTION_REPO);
+            exec("git remote add nightly git@github.com:" + NIGHTLY_REPO);
         } catch (e) {}
+        exec("git checkout master");
+        exec('git tag -am "' + tag + '" "' + tag + '"');
+        exec("git push nightly master --tags --force");
+
+        exec("rm -rf ./.git");
+        exec('git init');
+        exec("git remote add nightly git@github.com:" + NIGHTLY_REPO);
         exec("git add .");
-        try {
-            exec('git commit -m "Auto-Build: ' + tag + '"');
-        } catch (e) {}
-        try {
-            exec('git tag -am "' + tag + '" "' + tag + '"');
-        } catch (e) {}
-        exec("git push nightly angular:master -f --tags");
+        exec('git commit -m "Auto-Build: ' + tag + '"');
+        exec("git push nightly master --force");
         popd();
     },
     /**
@@ -58,6 +63,10 @@ var exports = {
      */
     determineLastTagHash: function(nightly) {
         var repository = nightly ? NIGHTLY_REPO : PRODUCTION_REPO;
+
+        // https://api.github.com/repos/DuckieTV/Nightlies-tester/git/refs/tags
+        //https: //api.github.com/repos/DuckieTV/Nightlies-tester/git/refs/tags/nightly-201702171102
+
         return request
             .get('https://api.github.com/repos/' + repository + '/releases')
             .query({
@@ -74,9 +83,10 @@ var exports = {
                         'access_token': credentials.GITHUB_API_KEY
                     })
                     .then(function(response) {
+                        echo("Found: ", response);
                         return response.body.parents[0].sha
                     }, function(error) {
-                        echo(error);
+                        throw error;
                     });
             });
     },
@@ -89,7 +99,9 @@ var exports = {
         pushd(SOURCES_DIR);
         var changelog = exec("git log " + hash + '..HEAD --oneline');
         popd();
-        return changelog.trim().split("\n").join('\n - ');
+        var changelog = changelog.trim().split("\n").join('\n - ');
+        echo("Changelog: ", changelog);
+        return changelog;
     },
     /**
      * create a new release on the nightly repo with the changelog
@@ -97,7 +109,7 @@ var exports = {
      */
     createNightlyRelease: function(tag, changelog) {
         var repository = NIGHTLY_REPO;
-
+        echo("Creating nightly release");
         return request
             .post('https://api.github.com/repos/' + repository + '/releases')
             .query({
@@ -106,7 +118,7 @@ var exports = {
             .send({
                 "tag_name": tag,
                 "target_commitish": "master",
-                "name": "Nightly release for " + dateFormat("dd-mm-yyyy"),
+                "name": "Nightly release for " + dateFormat("dd-mm-yyyy hh:mm:ss"),
                 "body": "DuckieTV nightly release for " + dateFormat(new Date()) + ".\n**Changelog:**\n - " + changelog,
                 "draft": false,
                 "prerelease": true

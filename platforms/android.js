@@ -61,6 +61,7 @@ module.exports = {
             popd();
         },
         publish: function(options) {
+            pushToGithub();
             return [buildUtils.buildFileName(PACKAGE_FILENAME)];
         }
     }
@@ -115,13 +116,14 @@ function renameLocalesDir() {
  * Init a fresh git repo without history to be able to push to the remotes.
  */
 function initRepository() {
-    cd(BUILD_DIR);
+    pushd(BUILD_DIR);
     rm('-rf', './.git');
     exec('git init');
     exec('git remote add origin git@github.com:SchizoDuckie/DuckieTV-Cordova.git');
     exec('git remote add duckietv git@github.com:DuckieTV/DuckieTV.git');
     exec('git add .');
     exec('git commit -m "Android deployment."');
+    popd();
 }
 
 /**
@@ -129,9 +131,10 @@ function initRepository() {
  * Phonegap build does a fresh clone from this repo before building.
  */
 function pushToCordovaGithub() {
-    cd(BUILD_DIR);
+    pushd(BUILD_DIR);
     echo('pushing to SchizoDuckie/DuckieTV-Cordova:master');
     echo('git push --force origin master');
+    popd()
 }
 
 
@@ -139,9 +142,10 @@ function pushToCordovaGithub() {
  * The cordova build doubles as the 'demo', which is hosted on github pages.
  */
 function pushToGithub() {
-    cd(BUILD_DIR);
+    pushd(BUILD_DIR);
     echo('pushing to DuckieTV/DuckieTV:gh-pages');
     echo('git push --force duckietv master:gh-pages');
+    popd();
 }
 
 /**

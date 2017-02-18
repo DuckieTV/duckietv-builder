@@ -52,17 +52,20 @@ echo(JSON.stringify(files));
 
 if (program.nightly) {
     github.determineLastTagHash(program.nightly).then(function(lastTag) {
-
-        var changelog = github.getChangeLogSince(sharedConfig.BUILD_SOURCE_DIR, lastTag);
+        echo("Last tag hash:", lastTag);
+        echo("Fetching changelog");
+        var changelog = github.getChangeLogSince(sharedConfig.CHANGELOG_DIFF_DIR, lastTag);
         var tag = 'nightly-' + sharedConfig.getVersion();
 
-        github.createNightlyTag(sharedConfig.BUILD_SOURCE_DIR, tag);
+        github.createNightlyTag(sharedConfig.CHANGELOG_DIFF_DIR, tag);
 
         return github.createNightlyRelease(tag, changelog).then(function(release_id) {
             echo(release_id);
             echo("Nightly release " + tag + " created with ID " + release_id + ".\nChangelog: \n" + changelog.replace('\n', "\n"));
             return release_id;
         });
+    }, function(err) {
+        throw err;
     }).then(function(release_id) {
         echo("\n\nnow uploading files:\n");
         echo(JSON.stringify(files));

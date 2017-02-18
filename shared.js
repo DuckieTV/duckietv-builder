@@ -58,7 +58,15 @@ function rotateNightlyImages(SOURCES_DIR) {
     echo('Rotating nightly logos for webstore');
     pushd(SOURCES_DIR + '/img/logo');
     ['icon16.png', 'icon32.png', 'icon48.png', 'icon128.png', 'icon256.png'].map(function(file) {
-        exec("convert " + file + " -rotate 180 " + file);
+        if (process.platform != 'win32') {
+            exec("convert " + file + " -rotate 180 " + file);
+        } else {
+            if (!which('magick')) {
+                echo("magick is required to rotate icons. Grab it from http://www.imagemagick.org/script/download.php");
+                process.exit();
+            }            
+            exec("magick convert " + file + " -rotate 180 " + file);
+        }
     });
     popd();
 }

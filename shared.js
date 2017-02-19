@@ -67,7 +67,7 @@ function rotateNightlyImages(SOURCES_DIR) {
             if (!which('magick')) {
                 echo("magick is required to rotate icons. Grab it from http://www.imagemagick.org/script/download.php");
                 process.exit();
-            }            
+            }
             exec("magick convert " + file + " -rotate 180 " + file);
         }
     });
@@ -86,7 +86,7 @@ var REPLACE_ALL_PLACEHOLDERS_REGEX = /<!-- deploy:replace\=\'(.*)\' -->([\s\S]+?
 /**
  * Parse tab.html and find all deploy:replace comments, concat the files between them to their output parameter.
  */
-function processTabHTML() {
+function processTabHTML(nightly) {
 
     cd(BUILD_SOURCE_DIR);
     var tab = cat('tab.html');
@@ -111,7 +111,11 @@ function processTabHTML() {
         var targetfile = /href="dist\/(.*\.css)\"/g.exec(match)[1];
         echo("processing: dist/" + targetfile);
         var styles = match.match(FIND_CSS_FILENAME_REGEX);
+        if (!nightly) {
+            styles.push('css/hide-prod.css');
+        }
         cat(styles).to(BASE_OUTPUT_DIR + "/dist/" + targetfile);
+
     });
 
     // remove the whole deploy:replace block and replace it with an include to the target file

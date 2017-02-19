@@ -64,7 +64,7 @@ echo("Determined version: " + program.version);
  * Build template cache, copy files into place for each output method, patch locales with 'nightly' prefix when needed.
  */
 sharedConfig.buildTemplateCache(); // concat all html files into a templatecache module to speed up load times
-sharedConfig.processTabHTML(); // grab all resources in tab.html and process / minify them for dist.
+sharedConfig.processTabHTML(program.nightly); // grab all resources in tab.html and process / minify them for dist.
 sharedConfig.copyDefaultResources(buildDirs); // copy the default resources (templates, images, fixtures) that are shared between all builds
 
 /**

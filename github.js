@@ -10,8 +10,11 @@ var NIGHTLY_REPO = 'DuckieTV/Nightlies';
 
 var exports = {
 
-    downloadRepo: function() {
+    downloadRepo: function(tag) {
         exec("git clone git@github.com:" + PRODUCTION_REPO + " .");
+        if (tag) {
+            exec("git checkout " + tag);
+        }
         mkdir('-p', shared.CHANGELOG_DIFF_DIR);
         cp('-r', ['*', '.*'], shared.CHANGELOG_DIFF_DIR);
 

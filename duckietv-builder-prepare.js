@@ -6,7 +6,7 @@ var program = require('commander'),
     sharedConfig = require('./shared'),
     github = require('./github');
 
-config.verbose = false;
+config.verbose = true;
 config.fatal = true;
 
 
@@ -21,6 +21,7 @@ program
     .option("-p, --platform [platforms]", "Build a specific platform (defaults to all: " + sharedConfig.platforms.join(","), function(val) {
         return val.toLowerCase().split(',');
     }, sharedConfig.platforms)
+    .option("-t, --tag [tag]", "Tag to checkout and perform build on")
     .option("-n, --nightly", "do a nightly (version number set to today)")
     .parse(process.argv);
 
@@ -52,7 +53,7 @@ mkdir('-p', defaultDirs); // init intial structure
  * Make sure we have a copy of DuckieTV to work from
  */
 cd(sharedConfig.BUILD_SOURCE_DIR); // move into build source dir
-github.downloadRepo(); // todo: add --tag parameter that'll checkout a previous tag. now grabs trunk of :angular
+github.downloadRepo(program.tag);
 
 /**
  * Determine version based on nightly switch, save it to program global and to shared VERSION file.

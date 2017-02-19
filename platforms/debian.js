@@ -51,7 +51,7 @@ module.exports = {
                 pushd(BUILD_DIR + "-" + arch);
 
                 cat('DEBIAN/control')
-                    .replace(/{{ARCHITECTURE}}/g, arch)
+                    .replace(/{{ARCHITECTURE}}/g, arch == 'x64' ? 'amd64' : arch)
                     .replace(/{{VERSION}}/g, shared.getVersion())
                     .replace(/{{NIGHTLY}}/g, options.nightly ? ".nightly" : "")
                     .to('DEBIAN/control');

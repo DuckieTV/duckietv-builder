@@ -11,7 +11,7 @@ var NIGHTLY_REPO = 'DuckieTV/Nightlies';
 var exports = {
 
     downloadRepo: function(tag) {
-        exec("git clone git@github.com:" + PRODUCTION_REPO + " .");
+        exec("git clone --progress git@github.com:" + PRODUCTION_REPO + " .");
         if (tag) {
             exec("git checkout " + tag);
         }

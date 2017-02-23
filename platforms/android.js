@@ -40,7 +40,7 @@ module.exports = {
 
         /**
          * The cordova build process is outsourced to Phonegap Build.
-         * We trigger a refresh and build there and wait for it to complete for 3 0fsaeconds (builds usally take 5 sec)
+         * We trigger a refresh and build there and wait for it to complete for 30 seconds (builds usually take 5 sec)
          */
         makeBinary: function(options) {
             initRepository();
@@ -67,11 +67,6 @@ module.exports = {
     }
 
 };
-
-function downloadPhonegapBuild(target_dir) {
-    pushd(target_dir);
-}
-
 
 /**
  * Give the android build a dedicated viewport so that it looks the same on each device.
@@ -133,7 +128,7 @@ function initRepository() {
 function pushToCordovaGithub() {
     pushd(BUILD_DIR);
     echo('pushing to SchizoDuckie/DuckieTV-Cordova:master');
-    echo('git push --force origin master');
+    exec('git push --force origin master');
     popd()
 }
 
@@ -144,7 +139,7 @@ function pushToCordovaGithub() {
 function pushToGithub() {
     pushd(BUILD_DIR);
     echo('pushing to DuckieTV/DuckieTV:gh-pages');
-    echo('git push --force duckietv master:gh-pages');
+    exec('git push --force duckietv master:gh-pages');
     popd();
 }
 

@@ -34,14 +34,14 @@ check_dependencies_and_run () {
     fi
   done;
 
-	if [[ $DEPS1 = 'OK'] && [$DEPS2 = 'OK' ]]; then
+	if [[ ( $DEPS1 = 'OK' ) && ( $DEPS2 = 'OK' ) ]]; then
 	    remove_previous_version;
 		install_app;
 	else
-    if [[ $DEPS1 = 'NOK']]; then
+    if [[ $DEPS1 = 'NOK' ]]; then
 		  printf "\n\n\n\e[41m  \e[0m It seems you are missing \e[1;37mgconf\e[0m. Please install it using your package manager\n\n\n"
 	  fi
-    if [[ $DEPS2 = 'NOK']]; then
+    if [[ $DEPS2 = 'NOK' ]]; then
       printf "\n\n\n\e[41m  \e[0m It seems you are missing \e[1;37mxdg-utils\e[0m. Please install it using package manager\n\n\n"
     fi
 

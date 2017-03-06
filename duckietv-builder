@@ -24,7 +24,7 @@ if (!which('git')) {
 
 
 program
-    .version('1.0.9')
+    .version('1.0.11')
     .option('-v, --verbose', 'increase verbosity')
     .command('tag-release', 'create a new (nightly) tag and push it to the repository')
     .command('prepare', 'prepare (nightly) builds for [platforms]')
@@ -33,6 +33,7 @@ program
     .command('publish', 'upload packaged (nightly) installers to the github release on [tag] and to the chrome web store')
     .command('oauth-init', 'Open a web browser to grab an oAuth access token for the webstore api and store initial tokens')
     .command('update-xem-cache', 'Update the TheXem.de precached data and publish it to github pages for hosting')
+    .command('cleanup-binaries', 'empties the binaries directory')
     .parse(process.argv);
 
 

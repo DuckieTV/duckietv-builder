@@ -31,7 +31,15 @@ module.exports = {
             renameTab();
             patchAppJS();
             patchDepsJS();
-            shared.patchManifest(BUILD_DIR, ['dist/background.js', 'dist/launch.js']);
+            cp([shared.BUILD_SOURCE_DIR + "/manifest-app.json"], BUILD_DIR + '/manifest.json');
+            shared.patchManifest(BUILD_DIR, [
+                'dist/CRUD.js',
+                'dist/CRUD.SqliteAdapter.js',
+                'dist/CRUD.entities.js',
+                'dist/CRUD.background.bootstrap.js',
+                'dist/background.js',
+                'dist/launch.js'
+            ]);
             if (options.nightly) {
                 shared.addNightlyStrings(BUILD_DIR);
             }

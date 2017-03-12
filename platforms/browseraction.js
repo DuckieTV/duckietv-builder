@@ -26,21 +26,12 @@ module.exports = {
                 ShellString((dt.getFullYear() + 1000) + "." + (dt.getMonth() + 1) + '.' + dt.getDate() + '.' + minutesSinceMidnight).to(BUILD_DIR + '/VERSION'); // set nightly version to work without prefix zeros and separated by dots.
             }
             cp([shared.BUILD_SOURCE_DIR + "/manifest-app.json"], BUILD_DIR + '/manifest.json');
-            cp([
-                    shared.BUILD_SOURCE_DIR + "/js/background.js",
-                    shared.BUILD_SOURCE_DIR + "/js/vendor/CRUD.js",
-                    shared.BUILD_SOURCE_DIR + "/js/vendor/CRUD.SqliteAdapter.js",
-                    shared.BUILD_SOURCE_DIR + "/js/CRUD.entities.js",
-                    shared.BUILD_SOURCE_DIR + "/js/CRUD.background.bootstrap.js",
-                    shared.BUILD_SOURCE_DIR + "/launch.js"
-                ], BUILD_DIR + '/dist/'
-            );
             shared.patchManifest(BUILD_DIR, [
-                'dist/background.js',
                 'dist/CRUD.js',
                 'dist/CRUD.SqliteAdapter.js',
                 'dist/CRUD.entities.js',
                 'dist/CRUD.background.bootstrap.js',
+                'dist/background.js',
                 'dist/launch.js'
             ]);
             if (options.nightly) {

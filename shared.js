@@ -37,9 +37,17 @@ module.exports = {
 function copyDefaultResources(targets) {
     cd(BUILD_SOURCE_DIR);
     targets.map(function(target) {
-        cp('-r', [BASE_OUTPUT_DIR + '/*', 'fanart.cache.json', 'trakt-trending-500.json', '_locales/', 'fonts/', 'img/', 'templates/'], target);
-        cp(BUILD_SOURCE_DIR + '/js/background.js', target + '/dist');
+        cp('-r', [BASE_OUTPUT_DIR + '/*', 'standalone-background.js', 'fanart.cache.json', 'trakt-trending-500.json', '_locales/', 'fonts/', 'img/', 'templates/'], target);
         cp(BUILD_SOURCE_DIR + '/manifest.json', target + '/');
+        cp([
+                BUILD_SOURCE_DIR + "/js/vendor/CRUD.js",
+                BUILD_SOURCE_DIR + "/js/vendor/CRUD.SqliteAdapter.js",
+                BUILD_SOURCE_DIR + "/js/CRUD.entities.js",
+                BUILD_SOURCE_DIR + "/js/CRUD.background.bootstrap.js",
+                BUILD_SOURCE_DIR + "/js/background.js",
+                BUILD_SOURCE_DIR + "/launch.js"
+            ], target + '/dist'
+        );
     });
 }
 

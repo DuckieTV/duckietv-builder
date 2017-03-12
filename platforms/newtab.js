@@ -7,7 +7,7 @@ var shared = require('../shared'),
 
 /**
  * DuckieTV new tab build processor.
- * The new tab doesn't have to do anything special, just package.
+ * This processor places background.js (and dependants) in the dist folder and references it from the package.json.
  * Modifies the manifest in case of nightly.
  */
 
@@ -26,7 +26,21 @@ module.exports = {
                 var minutesSinceMidnight = 1 + dt.getMinutes() + (60 * dt.getHours());
                 ShellString((dt.getFullYear() + 1000) + "." + (dt.getMonth() + 1) + '.' + dt.getDate() + '.' + minutesSinceMidnight).to(BUILD_DIR + '/VERSION'); // set nightly version to work without prefix zeros and separated by dots.
             }
-            shared.patchManifest(BUILD_DIR, ['dist/background.js']);
+            cp([
+                    shared.BUILD_SOURCE_DIR + "/js/background.js",
+                    shared.BUILD_SOURCE_DIR + "/js/vendor/CRUD.js",
+                    shared.BUILD_SOURCE_DIR + "/js/vendor/CRUD.SqliteAdapter.js",
+                    shared.BUILD_SOURCE_DIR + "/js/CRUD.entities.js",
+                    shared.BUILD_SOURCE_DIR + "/js/CRUD.background.bootstrap.js"
+                ], BUILD_DIR + '/dist/'
+            );
+            shared.patchManifest(BUILD_DIR, [
+                'dist/background.js',
+                'dist/CRUD.js',
+                'dist/CRUD.SqliteAdapter.js',
+                'dist/CRUD.entities.js',
+                'dist/CRUD.background.bootstrap.js'
+            ]);
             if (options.nightly) {
                 shared.addNightlyStrings(BUILD_DIR);
                 shared.rotateNightlyImages(BUILD_DIR);

@@ -33,6 +33,7 @@ module.exports = {
             patchDepsJS();
             cp([shared.BUILD_SOURCE_DIR + "/manifest-app.json"], BUILD_DIR + '/manifest.json');
             shared.patchManifest(BUILD_DIR, shared.getManifestBackgroundScriptArray(BUILD_DIR + '/manifest.json', 'dist/'));
+            cp(shared.BUILD_SOURCE_DIR + '/launch.js', BUILD_DIR + '/dist');            
             if (options.nightly) {
                 shared.addNightlyStrings(BUILD_DIR);
             }

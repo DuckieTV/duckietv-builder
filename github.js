@@ -46,19 +46,16 @@ var exports = {
     },
     createNightlyTag: function(SOURCES_DIR, tag) {
         pushd(SOURCES_DIR);
-        try {
-            exec("git remote add nightly git@github.com:" + NIGHTLY_REPO);
-        } catch (e) {}
-        exec("git checkout master");
-        exec('git tag -am "' + tag + '" "' + tag + '"');
-        exec("git push nightly master --tags --force");
 
         exec("rm -rf ./.git");
         exec('git init');
         exec("git remote add nightly git@github.com:" + NIGHTLY_REPO);
+        exec("git checkout master");
+        exec('git tag -am "' + tag + '" "' + tag + '"');
         exec("git add .");
         exec('git commit -m "Auto-Build: ' + tag + '"');
         exec("git push nightly master --force");
+        exec("git push nightly master --tags --force");
         popd();
     },
     /**

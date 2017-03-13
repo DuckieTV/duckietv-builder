@@ -47,38 +47,40 @@ function fetchMapping(tvdb, idx) {
 }
 
 
-/*request.get('http://thexem.de/map/havemap?origin=tvdb&destination=scene').then(function(response) {
-        echo("Fetched ", response.body.data.length + " mapping ids");
-        return response.body.data;
-    }).then(function(mappings) {
-        return Promise.all(mappings.map(fetchMapping));
-    })
-    .then(function(done) {
-       // echo("Done performing " + responseCounter + " requests. Publishing results to " + shared.XEM_CACHE_DIR + "/mappings.json");
-        ShellString(JSON.stringify(haveSceneMappings, null, 2)).to(shared.XEM_CACHE_DIR + '/mappings.json');
-    })
-    .then(function() {*/
-if (program.publish) {
-    echo("Publishing to github")
-    mkdir('-p', shared.XEM_CACHE_DIR + '/repo');
-    pushd(shared.XEM_CACHE_DIR + '/repo');
-    if (!test('-d', '.git')) {
-        exec('git init');
-        exec('git remote add origin git@github.com:DuckieTV/xem-cache.git')
-        exec('git checkout -b origin/gh-pages');
+request.get('http://thexem.de/map/havemap?origin=tvdb&destination=scene')
+.then(function(response) {
+    echo("Fetched ", response.body.data.length + " mapping ids");
+    return response.body.data;
+})
+.then(function(mappings) {
+    return Promise.all(mappings.map(fetchMapping));
+})
+.then(function(done) {
+   // echo("Done performing " + responseCounter + " requests. Publishing results to " + shared.XEM_CACHE_DIR + "/mappings.json");
+    ShellString(JSON.stringify(haveSceneMappings, null, 2)).to(shared.XEM_CACHE_DIR + '/mappings.json');
+})
+.then(function() {
+    if (program.publish) {
+        echo("Publishing to github")
+        mkdir('-p', shared.XEM_CACHE_DIR + '/repo');
+        pushd(shared.XEM_CACHE_DIR + '/repo');
+        if (!test('-d', '.git')) {
+            exec('git init');
+            exec('git remote add origin git@github.com:DuckieTV/xem-cache.git')
+            exec('git checkout -b origin/gh-pages');
+        }
+        exec("git pull origin gh-pages");
+        cp(shared.XEM_CACHE_DIR + '/*.json', shared.XEM_CACHE_DIR + '/repo');
+        exec("git add .");
+        exec('git commit -m "XEM Cache update"');
+        echo("pushing to DuckieTV/xem-cache:gh-pages")
+        exec('git push origin master:gh-pages -f');
+        popd();
+    } else {
+        echo("--publish option missing, not pushing to github.");
     }
-    exec("git pull origin gh-pages");
-    cp(shared.XEM_CACHE_DIR + '/*.json', shared.XEM_CACHE_DIR + '/repo');
-    exec("git add .");
-    exec('git commit -m "XEM Cache update"');
-    echo("pushing to DuckieTV/xem-cache:gh-pages")
-    exec('git push origin master:gh-pages -f');
-    popd();
-} else {
-    echo("--publish option missing, not pushing to github.");
-}
-//    return
-//})
+    return
+})
 
 function rqe(e) {
     console.error('Error fetching:', E);

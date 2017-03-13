@@ -22,6 +22,8 @@ module.exports = {
     putCredentials: putCredentials,
     patchManifest: patchManifest,
     getVersion: getVersion,
+    getManifestBackgroundScriptArray:getManifestBackgroundScriptArray,
+    buildStandaloneBackgroundJS: buildStandaloneBackgroundJS,
     BUILD_DIR: BUILD_DIR,
     BUILD_SOURCE_DIR: BUILD_SOURCE_DIR,
     BASE_OUTPUT_DIR: BASE_OUTPUT_DIR,
@@ -37,17 +39,12 @@ module.exports = {
 function copyDefaultResources(targets) {
     cd(BUILD_SOURCE_DIR);
     targets.map(function(target) {
-        cp('-r', [BASE_OUTPUT_DIR + '/*', 'standalone-background.js', 'fanart.cache.json', 'trakt-trending-500.json', '_locales/', 'fonts/', 'img/', 'templates/'], target);
+        cp('-r', [BASE_OUTPUT_DIR + '/*', 'fanart.cache.json', 'trakt-trending-500.json', '_locales/', 'fonts/', 'img/', 'templates/'], target);
         cp(BUILD_SOURCE_DIR + '/manifest.json', target + '/');
-        cp([
-                BUILD_SOURCE_DIR + "/js/vendor/CRUD.js",
-                BUILD_SOURCE_DIR + "/js/vendor/CRUD.SqliteAdapter.js",
-                BUILD_SOURCE_DIR + "/js/CRUD.entities.js",
-                BUILD_SOURCE_DIR + "/js/CRUD.background.bootstrap.js",
-                BUILD_SOURCE_DIR + "/js/background.js",
-                BUILD_SOURCE_DIR + "/launch.js"
-            ], target + '/dist'
-        );
+        getManifestBackgroundScriptArray(target +  '/manifest.json').map(function(source) {
+            cp(BUILD_SOURCE_DIR + source, target + '/dist');            
+        });
+        buildStandaloneBackgroundJS(target, getManifestBackgroundScriptArray(target +  '/manifest.json'));
     });
 }
 
@@ -192,4 +189,32 @@ function patchManifest(BUILD_DIR, backgroundScripts) {
     manifest.version = cat(BUILD_DIR + "/VERSION");
     manifest.background.scripts = backgroundScripts;
     ShellString(JSON.stringify(manifest, null, "\t")).to(BUILD_DIR + "/manifest.json");
+}
+
+/**
+ * concatenate the contents of files from the manifest.background.scripts array into the standalone-background.js file
+ */
+function buildStandaloneBackgroundJS(BUILD_DIR, manifestBSArray) {
+    echo("processing: standalone-background.js");
+    var source = manifestBSArray.map(function(script) {
+        return cat(BUILD_SOURCE_DIR + script);
+    });
+    ShellString(source.join(";\n")).to(BUILD_DIR + '/standalone-background.js');
+}
+
+/**
+ * returns the manifest.json background.script array, optionally modified with prefix 
+ */
+function getManifestBackgroundScriptArray(manifestPath, optionalPrefix) {
+    var manifest = JSON.parse(cat(manifestPath));
+    var manifestBSArray = manifest.background.scripts.map(function(item) {
+        return '/' + item;
+    })
+    if (optionalPrefix) {
+        manifestBSArray = manifestBSArray.map(function(item) {
+            var path = item.split("/");
+            return optionalPrefix + path[path.length - 1];
+        })
+    }
+    return manifestBSArray;
 }

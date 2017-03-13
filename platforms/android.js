@@ -32,14 +32,7 @@ module.exports = {
             patchAppJS();
             patchDepsJS();
             cp([shared.BUILD_SOURCE_DIR + "/manifest-app.json"], BUILD_DIR + '/manifest.json');
-            shared.patchManifest(BUILD_DIR, [
-                'dist/CRUD.js',
-                'dist/CRUD.SqliteAdapter.js',
-                'dist/CRUD.entities.js',
-                'dist/CRUD.background.bootstrap.js',
-                'dist/background.js',
-                'dist/launch.js'
-            ]);
+            shared.patchManifest(BUILD_DIR, shared.getManifestBackgroundScriptArray(BUILD_DIR + '/manifest.json', 'dist/'));
             if (options.nightly) {
                 shared.addNightlyStrings(BUILD_DIR);
             }

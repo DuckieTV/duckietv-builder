@@ -26,13 +26,7 @@ module.exports = {
                 var minutesSinceMidnight = 1 + dt.getMinutes() + (60 * dt.getHours());
                 ShellString((dt.getFullYear() + 1000) + "." + (dt.getMonth() + 1) + '.' + dt.getDate() + '.' + minutesSinceMidnight).to(BUILD_DIR + '/VERSION'); // set nightly version to work without prefix zeros and separated by dots.
             }
-            shared.patchManifest(BUILD_DIR, [
-                'dist/CRUD.js',
-                'dist/CRUD.SqliteAdapter.js',
-                'dist/CRUD.entities.js',
-                'dist/CRUD.background.bootstrap.js',
-                'dist/background.js'
-            ]);
+            shared.patchManifest(BUILD_DIR, shared.getManifestBackgroundScriptArray(BUILD_DIR + '/manifest.json', 'dist/'));
             if (options.nightly) {
                 shared.addNightlyStrings(BUILD_DIR);
                 shared.rotateNightlyImages(BUILD_DIR);

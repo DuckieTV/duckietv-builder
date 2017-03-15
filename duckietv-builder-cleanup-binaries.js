@@ -18,5 +18,6 @@ program
 
 rm('-rf', sharedConfig.BINARY_OUTPUT_DIR);
 mkdir(sharedConfig.BINARY_OUTPUT_DIR);
+rm('-rf', require('os').homedir() + "/nwjs_download_cache");
 
 echo("Cleanup binaries performed.");

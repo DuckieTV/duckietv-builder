@@ -49,7 +49,7 @@ var exports = {
         try {
             exec("git remote add nightly git@github.com:" + NIGHTLY_REPO);
         } catch (e) {}
-        exec("git checkout master");
+        exec("git checkout -b master");
         exec('git tag -am "' + tag + '" "' + tag + '"');
         exec("git push nightly master --tags --force");
 

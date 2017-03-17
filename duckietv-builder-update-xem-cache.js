@@ -80,9 +80,9 @@ request.get('http://thexem.de/map/havemap?origin=tvdb&destination=scene')
             exec("git pull origin gh-pages");
             cp(shared.XEM_CACHE_DIR + '/*.json', shared.XEM_CACHE_DIR + '/repo');
             exec("git add .");
-            exec('git commit -m "XEM Cache update"');
+            exec('git commit -m "XEM Cache update '+new Date().toISOString()+'"');
             echo("pushing to DuckieTV/xem-cache:gh-pages")
-            exec('git push origin master:gh-pages -f');
+            exec('git push origin gh-pages -f');
             popd();
         } else {
             echo("--publish option missing, not pushing to github.");

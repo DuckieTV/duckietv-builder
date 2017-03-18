@@ -6,8 +6,8 @@ var program = require('commander'),
     request = require('superagent'),
     sleep = require('sleep'),
     responseCounter = 0,
-    requestCounter = 0;
-haveSceneMappings = [];
+    requestCounter = 0,
+    haveSceneMappings = [];
 
 config.verbose = false;
 config.fatal = true;
@@ -69,15 +69,16 @@ request.get('http://thexem.de/map/havemap?origin=tvdb&destination=scene')
     })
     .then(function() {
         if (program.publish) {
-            echo("Publishing to github")
+            echo("Publishing to github");
             mkdir('-p', shared.XEM_CACHE_DIR + '/repo');
             pushd(shared.XEM_CACHE_DIR + '/repo');
             if (!test('-d', '.git')) {
                 exec('git init');
                 exec('git remote add origin git@github.com:DuckieTV/xem-cache.git')
-                exec('git checkout -b origin/gh-pages');
+                exec('git checkout -b gh-pages');
             }
             exec("git pull origin gh-pages");
+            rm('-f', shared.XEM_CACHE_DIR + '/repo/*.json');
             cp(shared.XEM_CACHE_DIR + '/*.json', shared.XEM_CACHE_DIR + '/repo');
             exec("git add .");
             exec('git commit -m "XEM Cache update '+new Date().toISOString()+'"');

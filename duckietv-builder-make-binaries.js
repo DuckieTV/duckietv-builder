@@ -20,7 +20,7 @@ program
     .option("-n, --nightly", "do a nightly (version number set to today)")
     .parse(process.argv);
 
-
+sharedConfig.validateRequestedPlatforms(program.platform);
 
 /**
  * Build process

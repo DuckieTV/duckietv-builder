@@ -7,10 +7,11 @@ var BUILD_DIR = process.cwd() + '/TMP',
     BINARY_OUTPUT_DIR = process.cwd() + "/binaries",
     NWJS_DOWNLOAD_DIR = require('os').homedir() + "/nwjs_download_cache",
     XEM_CACHE_DIR = BUILD_DIR + "/xem-cache",
-    NWJS_VERSION = '0.21.1';
+    NWJS_VERSION = '0.21.3',
+    platforms = ['windows', 'osx', 'linux', 'debian', 'browseraction', 'newtab', 'android'];
 
 module.exports = {
-    platforms: ['windows', 'osx', 'linux', 'debian', 'browseraction', 'newtab', 'android'],
+    platforms: platforms,
     NWJS_VERSION: NWJS_VERSION,
     modifyPackageJSON: modifyPackageJSON,
     buildTemplateCache: buildTemplateCache,
@@ -24,6 +25,7 @@ module.exports = {
     getVersion: getVersion,
     getManifestBackgroundScriptArray:getManifestBackgroundScriptArray,
     buildStandaloneBackgroundJS: buildStandaloneBackgroundJS,
+    validateRequestedPlatforms: validateRequestedPlatforms,
     BUILD_DIR: BUILD_DIR,
     BUILD_SOURCE_DIR: BUILD_SOURCE_DIR,
     BASE_OUTPUT_DIR: BASE_OUTPUT_DIR,
@@ -217,4 +219,16 @@ function getManifestBackgroundScriptArray(manifestPath, optionalPrefix) {
         })
     }
     return manifestBSArray;
+}
+
+/**
+ * validate requested platforms and terminate on invalids 
+ */
+function validateRequestedPlatforms(platformsRequested) {
+    platformsRequested.map(function(platform) {
+        if (platforms.indexOf(platform) === -1) {
+            echo(platform + ' is not a valid platform. Use one or more of ' + platforms);         
+            process.exit();
+        }
+    });
 }

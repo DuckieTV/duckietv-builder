@@ -23,7 +23,7 @@ program
     .option("--iamverysure", "I am very sure that I want to do this. Tag a new release on github SchizoDuckie/DuckieTV")
     .parse(process.argv);
 
-
+sharedConfig.validateRequestedPlatforms(program.platform);
 
 /**
  * Build process

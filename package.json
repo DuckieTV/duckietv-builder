@@ -1,6 +1,6 @@
 {
   "name": "duckietv-builder",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "A new way to build duckietv",
   "main": "duckietv-builder",
   "repository": "https://github.com/DuckieTV/duckietv-builder.git",

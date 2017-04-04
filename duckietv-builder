@@ -24,7 +24,7 @@ if (!which('git')) {
 
 
 program
-    .version('1.0.16')
+    .version('1.0.17')
     .option('-v, --verbose', 'increase verbosity')
     .command('tag-release', 'create a new (nightly) tag and push it to the repository')
     .command('prepare', 'prepare (nightly) builds for [platforms]')

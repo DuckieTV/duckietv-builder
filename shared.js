@@ -162,9 +162,9 @@ function getVersion() {
 
 function modifyPackageJSON(options, BUILD_DIR) {
     var json = JSON.parse(cat(BUILD_SOURCE_DIR + '/package.json'));
-    var title = "DuckieTV Standalone" + ((options.nightly) ? ' Nightly' : '') + " v" + getVersion();
     json.version = getVersion();
-    json['user-agent'] = json.window.title = title;
+    json.window.title = json.name + ((options.nightly) ? ' Nightly' : '') + " v" + getVersion();
+    json['user-agent'] = "%name " + ((options.nightly) ? ' Nightly' : '') + " v%ver %osinfo";
     ShellString(JSON.stringify(json, null, "\t")).to(BUILD_DIR + '/package.json');
 }
 

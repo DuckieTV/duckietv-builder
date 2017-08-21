@@ -54,6 +54,12 @@ function fetchMapping(tvdb, idx) {
     })
 }
 
+request.get('http://thexem.de/map/allNames?origin=tvdb')
+    .then(function(response) {
+        echo("Fetched alias map");
+        ShellString(JSON.stringify(response.body.data, null, 2)).to(shared.XEM_CACHE_DIR + '/aliasmap.json');
+        return;
+    });
 
 request.get('http://thexem.de/map/havemap?origin=tvdb&destination=scene')
     .then(function(response) {
@@ -88,8 +94,8 @@ request.get('http://thexem.de/map/havemap?origin=tvdb&destination=scene')
         } else {
             echo("--publish option missing, not pushing to github.");
         }
-        return
-    })
+        return;
+    });
 
 function rqe(e) {
     console.error('Error fetching:', E);

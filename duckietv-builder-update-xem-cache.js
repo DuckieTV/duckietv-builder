@@ -71,7 +71,7 @@ request.get('http://thexem.de/map/havemap?origin=tvdb&destination=scene')
     })
     .then(function(done) {
         // echo("Done performing " + responseCounter + " requests. Publishing results to " + shared.XEM_CACHE_DIR + "/mappings.json");
-        ShellString(JSON.stringify(haveSceneMappings, null, 2)).to(shared.XEM_CACHE_DIR + '/mappings.json');
+        ShellString(JSON.stringify(haveSceneMappings.sort( function (a, b) { return a - b } ), null, 2)).to(shared.XEM_CACHE_DIR + '/mappings.json');
     })
     .then(function() {
         if (program.publish) {

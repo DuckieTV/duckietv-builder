@@ -36,10 +36,10 @@ Section "DuckieTV" Section1
 	SetOutPath "$INSTDIR\"
 	File /r "*"
 	
-	CreateShortCut "$DESKTOP\DuckieTV.lnk" "$INSTDIR\DuckieTV.exe" "" $INSTDIR\img\favicon.ico" 0
+	CreateShortCut "$DESKTOP\DuckieTV.lnk" "$INSTDIR\DuckieTV.exe" "" "$INSTDIR\img\favicon.ico" 0
 	CreateDirectory "$SMPROGRAMS\DuckieTV"
-	CreateShortCut "$SMPROGRAMS\DuckieTV\DuckieTV.lnk" "$INSTDIR\DuckieTV.exe" "" $INSTDIR\img\favicon.ico" 0
-	CreateShortCut "$SMPROGRAMS\DuckieTV\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" $INSTDIR\img\favicon.ico" 0
+	CreateShortCut "$SMPROGRAMS\DuckieTV\DuckieTV.lnk" "$INSTDIR\DuckieTV.exe" "" "$INSTDIR\img\favicon.ico" 0
+	CreateShortCut "$SMPROGRAMS\DuckieTV\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\img\favicon.ico" 0
 
 SectionEnd
 

@@ -4,3 +4,4 @@ binaries/
 nwjs_download_cache
 nwjs_download_cache/
 runtest.sh
+nightly-previouschangelog

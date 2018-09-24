@@ -77,7 +77,7 @@ module.exports = {
  */
 function patchTab() {
     cat(BUILD_DIR + '/tab.html')
-        .replace('</head>', '<meta name="viewport" content="width=1920,height=1080,target-densitydpi=device-dpi,user-scalable=yes" /></head>')
+        .replace('</head>', '<meta name="viewport" content="width=device-width,initial-scale=1.0,target-densitydpi=device-dpi,user-scalable=yes" /></head>')
         .replace("</body>", '<script src="cordova.js"></script><script src="dist/download.js"></script></body>')
         .to(BUILD_DIR + '/tab.html');
 }

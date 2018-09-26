@@ -55,21 +55,6 @@ if (program.nightly) {
         echo("Last tag hash:", lastTag);
         echo("Fetching changelog");
         var changelog = github.getChangeLogSince(sharedConfig.CHANGELOG_DIFF_DIR, lastTag);
-        // create dummy nightly-previouschangelog if required
-        if (!test('-f', 'nightly-previouschangelog')) {
-            ShellString('dummy').to("nightly-previouschangelog");
-            echo('first time nightly-previouschangelog file created');
-        };
-        // fetch commits list from previous nightly build
-        var previouschangelog = cat('nightly-previouschangelog');
-        if (changelog == previouschangelog) {
-            // no new commits found, no point in building a nightly
-            echo("no changes for nightly, terminating run.");
-            throw "no changes for nightly, terminating run.";
-        } else {
-            // new commits found, save for the next nightly build check tomorrow
-            ShellString(changelog).to("nightly-previouschangelog");
-        };
         var tag = 'nightly-' + sharedConfig.getVersion();
 
         github.createNightlyTag(sharedConfig.CHANGELOG_DIFF_DIR, tag);
@@ -92,7 +77,7 @@ if (program.nightly) {
             return true;
         }));
     }).then(function(done) {
-        echo("Nightly publishing all done");
+        console.log("all done");
     });
 
 }

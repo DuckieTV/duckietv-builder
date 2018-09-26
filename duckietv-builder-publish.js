@@ -77,7 +77,7 @@ if (program.nightly) {
             return true;
         }));
     }).then(function(done) {
-        console.log("all done");
+        echo("Nightly publishing all done");
     });
 
 }

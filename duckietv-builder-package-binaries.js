@@ -9,9 +9,9 @@ config.fatal = true;
 
 
 /**
- * Make binaries
- * - puts nwjs in place where needed
- * - performs .apk build via Phonegap Build for android (platform = cordova)
+ * Package binaries
+ * - package binaries to their respective packaging tgz format
+ * - move them to the binaries output dir
  */
 program
     .description('package binaries to their respective packaging tgz format, move them to the binaries output dir')

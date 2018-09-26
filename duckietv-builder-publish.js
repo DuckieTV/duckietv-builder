@@ -10,16 +10,15 @@ config.fatal = true;
 
 
 /**
- * Make binaries
- * - puts nwjs in place where needed
- * - performs .apk build via Phonegap Build for android (platform = cordova)
+ * Publish
+ * - publish the binaries to github and the chrome web store (if configured)
  */
 program
     .description('publish the binaries to github and the chrome web store (if configured)')
     .option("-p, --platform [platforms]", "publish a specific platform (defaults to all: " + sharedConfig.platforms.join(","), function(val) {
         return val.toLowerCase().split(',');
     }, sharedConfig.platforms)
-    .option("--nightly", "Publish the nightly version to the webstore and github")
+    .option("-n, --nightly", "Publish the nightly version to the webstore and github")
     .option("--iamverysure", "I am very sure that I want to do this. Tag a new release on github SchizoDuckie/DuckieTV")
     .parse(process.argv);
 

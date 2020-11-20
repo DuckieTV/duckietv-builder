@@ -41,25 +41,7 @@ module.exports = {
             buildUtils.zipBinary('newtab', targetFileName);
         },
         publish: function(options) {
-            if (!options.nightly && !options.iamverysure) {
-                echo("Not publishing production version! --iamverysure missing from command");
-                return;
-            }
-
-            oAuth.refreshTokenIfNeeded();
-            var credentials = shared.getCredentials();
-            var APP_ID = options.nightly ? credentials.EXTENSION_ID_NEWTAB_NIGHTLY : credentials.EXTENSION_ID_NEWTAB;
-
-            // upload zip
-            echo("\nUploading to chrome webstore\n");
-            oAuth.uploadBinary(APP_ID, shared.BINARY_OUTPUT_DIR + "/" + buildUtils.buildFileName(PACKAGE_FILENAME));
-
-            // publish it
-            echo("\nPublishing chrome webstore draft\n");
-            oAuth.publishDraft(APP_ID);
-
             return buildUtils.buildFileName(PACKAGE_FILENAME);
-
         }
     }
 }

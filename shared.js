@@ -7,7 +7,7 @@ var BUILD_DIR = process.cwd() + '/TMP',
     BINARY_OUTPUT_DIR = process.cwd() + "/binaries",
     NWJS_DOWNLOAD_DIR = require('os').homedir() + "/nwjs_download_cache",
     XEM_CACHE_DIR = BUILD_DIR + "/xem-cache",
-    NWJS_VERSION = '0.57.1',
+    NWJS_VERSION = '0.55.0',
     platforms = ['windows', 'osx', 'linux', 'debian', 'browseraction', 'newtab', 'android'];
 
 module.exports = {

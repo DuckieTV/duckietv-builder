@@ -14,16 +14,16 @@ config.fatal = true;
 
 
 /**
- * Update TheXem.de cache
+ * Update TheXem.info cache
  * Does some preparsing to fetch the list of all the mappings on thexem that have actual mappings.
  */
 program
-    .description('Update the TheXem.de precached data and publish it to github pages for hosting')
+    .description('Update the TheXem.info precached data and publish it to github pages for hosting')
     .option("--publish", "publish to gh-pages")
     .parse(process.argv);
 
 
-echo("Fetching XROSS Entity Mapping Cache from TheXem.de");
+echo("Fetching XROSS Entity Mapping Cache from TheXem.info");
 
 mkdir('-p', shared.XEM_CACHE_DIR);
 
@@ -34,7 +34,7 @@ function fetchMapping(tvdb, idx) {
     return new Promise(function(resolve, reject) {
         setTimeout(function() {
             echo("wait over, fetching " + tvdb);
-            resolve(request.get('http://thexem.de/map/all?id=' + tvdb + '&origin=tvdb&destination=scene').then(function(response) {
+            resolve(request.get('https://thexem.info/map/all?id=' + tvdb + '&origin=tvdb&destination=scene').then(function(response) {
                     var res = response.body,
                         willSave = res.data.length > 0;
 
@@ -54,14 +54,14 @@ function fetchMapping(tvdb, idx) {
     })
 }
 
-request.get('http://thexem.de/map/allNames?origin=tvdb')
+request.get('https://thexem.info/map/allNames?origin=tvdb')
     .then(function(response) {
         echo("Fetched alias map");
         ShellString(JSON.stringify(response.body.data, null, 2)).to(shared.XEM_CACHE_DIR + '/aliasmap.json');
         return;
     });
 
-request.get('http://thexem.de/map/havemap?origin=tvdb&destination=scene')
+request.get('https://thexem.info/map/havemap?origin=tvdb&destination=scene')
     .then(function(response) {
         echo("Fetched ", response.body.data.length + " mapping ids");
         return response.body.data;

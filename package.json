@@ -28,7 +28,7 @@
     "opn": "^4.0.2",
     "resourcehacker": "^4.2.51",
     "shelljs": "^0.8.5",
-    "sleep": "^5.1.0",
+    "sleep": "^6.3.0",
     "superagent": "^3.3.2"
   }
 }

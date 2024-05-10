@@ -87,6 +87,7 @@ module.exports = {
                 var WORK_DIR = shared.BUILD_DIR + '/osx-installer';
                 var APP_BUILD_DIR = WORK_DIR + '/root/Applications/DuckieTV.app/';
                 var RESOURCE_DIR = __dirname + "/osx/build";
+                cd(__dirname);
     
                 rm('-rf', WORK_DIR); // init work dir
                 mkdir('-p', WORK_DIR);

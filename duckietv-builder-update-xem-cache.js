@@ -98,5 +98,5 @@ request.get('https://thexem.info/map/havemap?origin=tvdb&destination=scene')
     });
 
 function rqe(e) {
-    console.error('Error fetching:', E);
+    console.error('Error fetching:', e);
 }

@@ -164,7 +164,7 @@ function modifyPackageJSON(options, BUILD_DIR) {
     var json = JSON.parse(cat(BUILD_SOURCE_DIR + '/package.json'));
     json.version = getVersion();
     json.window.title = json.name + ((options.nightly) ? ' Nightly' : '') + " v" + getVersion();
-    json['user-agent'] = "%name " + ((options.nightly) ? ' Nightly' : '') + " v%ver %osinfo";
+    json['user-agent'] = "%name " + "v%ver %osinfo";
     ShellString(JSON.stringify(json, null, "\t")).to(BUILD_DIR + '/package.json');
 }
 
